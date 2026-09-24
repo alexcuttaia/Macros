@@ -2483,6 +2483,10 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 .su-demo-skip{display:block;margin:12px auto 0;padding:6px 10px;font-size:13px;font-weight:700;color:var(--muted);
   text-decoration:underline;text-underline-offset:3px;text-decoration-color:color-mix(in srgb, var(--muted) 45%, transparent);}
 .su-demo-skip:hover{color:var(--ink);}
+/* "Ordine ricevuto": la spunta coi coriandoli risultava bassa rispetto ai passaggi, alzata un po' */
+.ot-hero .ot-lottie-received{transform:translateY(-14%);}
+/* "In preparazione" e "In consegna": alzate leggermente, come chiesto ("Consegnato" resta com'è) */
+.ot-hero .ot-lottie[data-anim="preparing"],.ot-hero .ot-lottie-onway{transform:translateY(-8%);}
 
 </style>
 <div class="splash-screen" id="splash-screen">
