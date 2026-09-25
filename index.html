@@ -940,7 +940,9 @@ html[data-theme="dark"] .cook-ic{background:var(--surface);}
 .dmap-close .drc-eta{animation:drcPulse 1.4s ease-in-out infinite;}
 @keyframes drcPulse{0%,100%{opacity:1;}50%{opacity:.55;}}
 @media (prefers-reduced-motion: reduce){.dmap-close .drc-eta{animation:none;}}
-.delivery-map{border-radius:var(--radius-m);overflow:hidden;background:var(--surface-2);}
+/* isolation: i livelli di Leaflet hanno z-index 400-1000; senza un contesto proprio la mappa passava
+   sopra la barra di navigazione (z-index 50) e la barra in alto mentre si scorre */
+.delivery-map{position:relative;isolation:isolate;z-index:0;border-radius:var(--radius-m);overflow:hidden;background:var(--surface-2);}
 .delivery-map-canvas{width:100%;height:220px;}
 .dmap-pin{display:block;width:14px;height:14px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35);}
 .dmap-rider{display:flex;align-items:center;justify-content:center;width:30px;height:30px;font-size:20px;background:var(--surface);border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,.25);}
@@ -2391,7 +2393,7 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 .ot-lottie svg{width:100% !important;height:100% !important;}
 .ot-lottie:not(.ot-lottie-on) svg{width:64px !important;height:64px !important;}
 
-/* Tracking (riprogettato): card con bordo sfumato e alone nei colori dei tasti gradiente del sito
+/* Tracking (riprogettato): card con bordo sfumato nei colori dei tasti gradiente del sito
    (--grad-green: verde → azzurro). In alto la fase in corso in grande e il tempo che manca, al
    centro i passaggi a sinistra e la scena animata a destra, in fondo la barra complessiva. */
 .order-tracker{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;
@@ -2399,16 +2401,6 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
   background:linear-gradient(var(--surface),var(--surface)) padding-box,
     linear-gradient(135deg,rgba(18,160,98,.55),rgba(42,184,113,.25) 45%,rgba(22,153,205,.55)) border-box;
   box-shadow:0 22px 44px -26px var(--glow-green),0 2px 10px rgba(36,37,42,.05);}
-/* due aloni che si muovono piano dietro la scena: la card "respira" invece di restare piatta */
-.order-tracker::before,.order-tracker::after{content:'';position:absolute;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(8px);}
-.order-tracker::before{width:78%;aspect-ratio:1;right:-22%;top:4%;
-  background:radial-gradient(closest-side,rgba(42,184,113,.30),rgba(42,184,113,.10) 60%,transparent);
-  animation:otGlowA 11s ease-in-out infinite alternate;}
-.order-tracker::after{width:62%;aspect-ratio:1;right:-6%;bottom:-30%;
-  background:radial-gradient(closest-side,rgba(22,153,205,.26),rgba(22,153,205,.08) 60%,transparent);
-  animation:otGlowB 13s ease-in-out infinite alternate;}
-@keyframes otGlowA{from{transform:translate(0,0) scale(1);}to{transform:translate(-12%,10%) scale(1.12);}}
-@keyframes otGlowB{from{transform:translate(0,0) scale(1.05);}to{transform:translate(-16%,-12%) scale(.92);}}
 
 /* intestazione */
 .ot-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:0 16px 0 18px;}
@@ -2464,7 +2456,7 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 .ot-done .ot-bar i{border-radius:0;}
 .ot-done .ot-bar i::after{animation:none;display:none;}
 @keyframes otShine{0%{transform:translateX(-100%);}60%,100%{transform:translateX(100%);}}
-@media (prefers-reduced-motion: reduce){.order-tracker::before,.order-tracker::after,.ot-live i,.ot-bar i::after{animation:none;}}
+@media (prefers-reduced-motion: reduce){.ot-live i,.ot-bar i::after{animation:none;}}
 /* "Consegnato": inquadrata sul sacchetto, le braccia dei due che se lo passano escono dai lati e sfumano */
 .ot-hero .ot-lottie-delivered{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24%,#000 84%,transparent 100%);
   mask-image:linear-gradient(90deg,transparent 0,#000 24%,#000 84%,transparent 100%);}
@@ -2487,6 +2479,17 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 .ot-hero .ot-lottie-received{transform:translateY(-14%);}
 /* "In preparazione" e "In consegna": alzate leggermente, come chiesto ("Consegnato" resta com'è) */
 .ot-hero .ot-lottie[data-anim="preparing"],.ot-hero .ot-lottie-onway{transform:translateY(-8%);}
+/* Telefono: l'animazione sta in altezza esattamente tra il primo passaggio ("Ordine ricevuto") e l'ultimo
+   ("Consegnato"). Il riquadro non ha più un'altezza fissa: con container-type:size non conta nel calcolo
+   della riga, quindi si allunga quanto l'elenco dei passaggi (senza spazio sotto l'ultimo, spostato sul
+   contenitore) e la scena si adatta dentro. Niente spostamenti verso l'alto: è già allineata. */
+@media (max-width:599px){
+  .ot-hero{height:auto;}
+  .ot-steps{padding-top:0;}
+  .order-tracker .ot-step:last-child{padding-bottom:0;}
+  .ot-main{padding-top:14px;padding-bottom:20px;}
+  .ot-hero .ot-lottie-received,.ot-hero .ot-lottie[data-anim="preparing"],.ot-hero .ot-lottie-onway{transform:none;}
+}
 
 </style>
 <div class="splash-screen" id="splash-screen">
@@ -3763,6 +3766,17 @@ const ART_SCENES = {
     return s;
   },
 
+  /* Smoothie proteico: bicchiere alto con cannuccia, liquido e un filo di schiuma in superficie */
+  shake(o, rnd){
+    return artEll(60, 111, 25, 5, 'rgba(40,40,60,.2)')
+      + artGroup(70, 44, 14, `<rect x="-3" y="-34" width="6" height="70" rx="3" fill="${o.straw}"/><rect x="-3" y="-34" width="2.2" height="70" rx="1.1" fill="#fff" opacity=".35"/>`)
+      + artPath('M35 28H85L78 103Q77 110 70 110H50Q43 110 42 103Z', 'rgba(226,236,244,.6)', ' stroke="#B7C7D5" stroke-width="1"')
+      + artPath('M37.6 46H82.4L77 102.5Q76.3 107.8 70 107.8H50Q43.7 107.8 43 102.5Z', o.liquid)
+      + (o.foam ? artPath('M37.6 46Q49 41.5 60 46T82.4 46V51.5Q71 56 60 51.5T37.6 51.5Z', o.foam, ' opacity=".85"') : '')
+      + artGroup(70, 44, 14, `<rect x="-3" y="-34" width="6" height="16" rx="3" fill="${o.straw}"/>`)
+      + artPath('M43 32L48.5 103', 'none', ' stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"');
+  },
+
   /* Misurino di polvere con un po' di polvere versata intorno (specchiato: il manico non finisce sotto il cuore) */
   scoop(o, rnd){
     let s = '<g transform="translate(60 60) scale(-1.12 1.12) translate(-63 -59)">';
@@ -3913,6 +3927,13 @@ const ART_OF = {
   sup19:['pills', {bottle:'#9DB07A', label:'#6E8A48'}],
   sup20:['pills', {bottle:'#6C7FC4', label:'#4A5DA8'}],
   sup21:['bottle', {cap:'#7B4CC4', wave:'#7B4CC4', water:'#D9C7F7', bubbles:[[52, 52, 1.4], [68, 78, 1.6], [56, 94, 1.2]]}],
+  p28:['shake', {liquid:'#EADFC8', foam:'#FBF7EE', straw:'#2AB871'}],
+  p29:['shake', {liquid:'#F1E6CF', foam:'#FFFBF2', straw:'#1699CD'}],
+  sup8:['shake', {liquid:'#EADFC8', foam:'#FBF7EE', straw:'#2AB871'}],
+  sup17:['shake', {liquid:'#F1E6CF', foam:'#FFFBF2', straw:'#1699CD'}],
+  'liq/acqua':['shake', {liquid:'rgba(128,190,236,.55)', straw:'#8FB8D8'}],
+  'liq/lattesl':['shake', {liquid:'#F6F3EC', foam:'#FFFFFF', straw:'#5DA8DA'}],
+  'liq/mandorla':['shake', {liquid:'#E6D2B0', foam:'#F4E9D6', straw:'#B8875A'}],
   sup4:['scoop', {powder:'#F08CA0', shade:'#D0607A', cup:'#DDE2EA'}],
   sup5:['scoop', {powder:'#F3EBD6', shade:'#D4C9A8', cup:'#F4C56B'}],
   sup6:['scoop', {powder:'#F8D77A', shade:'#DDB240', cup:'#7FD0C6'}],
@@ -4876,6 +4897,14 @@ const PROTEINS = [
   {id:'p13',cat:'protein',name:'Caseine',glyph:'🥛',optionSet:'proteinFlavor',
    desc:'Caseine micellari a rilascio lento: indicate la sera o tra i pasti.',
    kcal:360,p:80,c:5,f:1.5,fib:0,price:5.5,min:10,max:100,step:1,def:35},
+  // Smoothie di proteine in polvere: la quantità è quella della polvere (al grammo, come prima) e si
+  // sceglie il gusto e il liquido con cui viene frullata; noMatch: il Match non li propone come secondo
+  {id:'p28',cat:'protein',name:'Smoothie di Proteine Isolate',glyph:'🥤',optionSets:['proteinFlavor','smoothieLiquid'],noMatch:true,
+   desc:'Proteine isolate del siero del latte frullate con la base liquida che scegli (circa 250 ml ogni 30 g di polvere): assorbimento rapido, ideale nel post-allenamento.',
+   kcal:375,p:88,c:3,f:1,fib:0,price:6.0,min:10,max:100,step:5,def:30},
+  {id:'p29',cat:'protein',name:'Smoothie di Proteine Caseine',glyph:'🥤',optionSets:['proteinFlavor','smoothieLiquid'],noMatch:true,
+   desc:'Caseine micellari frullate con la base liquida che scegli (circa 250 ml ogni 30 g di polvere): rilascio lento, indicate la sera o tra i pasti.',
+   kcal:360,p:80,c:5,f:1.5,fib:0,price:5.5,min:10,max:100,step:5,def:30},
   {id:'p14',cat:'protein',name:'Yogurt Greco 0% Grassi',glyph:'🥣',desc:'Yogurt greco magro al naturale, denso e cremoso, praticamente senza grassi: ottimo spuntino proteico. Puoi aggiungere un topping a scelta.',kcal:57,p:10,c:3.6,f:0.2,fib:0,price:2.2,min:100,max:400,step:25,def:150,topping:{groups:TOPPING_GROUPS}},
 ];
 
@@ -5125,8 +5154,8 @@ const SUPPLEMENTS = [
   {id:'sup16',cat:'supplement',timing:'sera',name:'Magnesio',glyph:'',
    desc:'Magnesio per la routine serale. Una capsula.',
    unit:{g:1,one:'capsula',many:'capsule',i18n:'caps'},kcal:0,p:0,c:0,f:0,fib:0,price:0.6,portion:1,min:1,max:3,step:1},
-  {id:'sup17',cat:'supplement',timing:'sera',optionSet:'proteinFlavor',name:'Proteine Caseine',glyph:'',
-   desc:'Caseine micellari a rilascio lento, indicate la sera. Porzione da 30 g.',
+  {id:'sup17',cat:'supplement',timing:'sera',optionSets:['proteinFlavor','smoothieLiquid'],name:'Smoothie di Proteine Caseine',glyph:'',
+   desc:'Caseine micellari a rilascio lento, frullate con la base liquida che scegli (circa 250 ml ogni 30 g). Indicate la sera. Porzione da 30 g.',
    kcal:110,p:24,c:2,f:1,fib:0,price:1.8,portion:30,min:10,max:100,step:5},
   {id:'sup19',cat:'supplement',timing:'sera',name:'Ashwagandha',glyph:'',
    desc:'Pianta della tradizione ayurvedica, per la routine serale di relax. Una capsula.',
@@ -5173,8 +5202,8 @@ const SUPPLEMENTS = [
   {id:'sup7',cat:'supplement',timing:'post',name:'Creatina Monoidrata Creapure',glyph:'',
    desc:'Creatina monoidrata purissima (Creapure®), il riferimento per forza e recupero. Pillole da 1 g.',
    unit:{g:1,one:'pillola',many:'pillole',i18n:'pill'},kcal:0,p:0,c:0,f:0,fib:0,price:0.8,portion:5,min:1,max:10,step:1},
-  {id:'sup8',cat:'supplement',timing:['post','sera'],optionSet:'proteinFlavor',name:'Proteine Whey Isolate',glyph:'',
-   desc:'Siero del latte isolato ad assorbimento rapido, per il recupero post-allenamento.',
+  {id:'sup8',cat:'supplement',timing:'post',optionSets:['proteinFlavor','smoothieLiquid'],name:'Smoothie di Proteine Isolate',glyph:'',
+   desc:'Siero del latte isolato ad assorbimento rapido, frullato con la base liquida che scegli (circa 250 ml ogni 30 g), per il recupero post-allenamento.',
    kcal:113,p:26,c:1,f:0.5,fib:0,price:2.2,portion:30,min:10,max:100,step:5},
   {id:'sup9',cat:'supplement',timing:'post',name:'Glutammina',glyph:'',
    desc:'Aminoacido di supporto al recupero muscolare e alla funzione immunitaria. Pillole da 1 g.',
@@ -5219,6 +5248,18 @@ const OPTION_SETS = {
       {id:'rigatoni',  name:'Rigatoni rigati',  sub:'Tubi larghi e rigati, più corposi'},
     ],
   },
+  /* Base liquida degli smoothie proteici, scelta a card come la cottura delle uova. Il liquido va in
+     proporzione alla polvere (250 ml ogni 30 g, cioè ~833 ml ogni 100 g): add sono i valori per 100 ml,
+     sommati a quelli della polvere; allergens quelli che il liquido aggiunge. Valori tipici da etichetta:
+     latte scremato senza lattosio ~35 kcal, bevanda alla mandorla senza zuccheri ~13 kcal per 100 ml. */
+  smoothieLiquid: {
+    label:'Base liquida', labelKey:'detail.liquid', kind:'cards', artId:'liq', mlPer100g:833,
+    choices:[
+      {id:'acqua',    name:'Acqua',                          sub:'Nessuna caloria in più',                     add:{kcal:0,  p:0,   c:0,   f:0}},
+      {id:'lattesl',  name:'Latte scremato senza lattosio',  sub:'Più cremoso, con qualche proteina in più',    add:{kcal:35, p:3.5, c:4.9, f:0.1}, priceDelta:1.5},
+      {id:'mandorla', name:'Bevanda alla mandorla zero',     sub:'Senza zuccheri, vegetale · frutta a guscio',  add:{kcal:13, p:0.4, c:0,   f:1.1}, priceDelta:2, allergens:['nuts']},
+    ],
+  },
   proteinFlavor: {
     label:'Gusto',
     choices:[
@@ -5247,23 +5288,35 @@ const FAMILIES = [
   {id:'fam-uova',   cat:'protein', name:'Uova',            icon:'egg',     items:['p8','p9']},
   {id:'fam-veg',    cat:'protein', name:'Vegetale',        icon:'tofu',    items:['p10','p24','p25']},
   {id:'fam-latt',   cat:'protein', name:'Latticini',       icon:'jar',     items:['p14','p26','p27']},
+  {id:'fam-smoothie',cat:'protein',name:'Smoothie proteici',icon:'cup',     items:['p28','p29']},
 ];
 
 function familiesFor(cat){ return FAMILIES.filter(f=>f.cat===cat); }
 
-/* Insieme di varianti di un alimento: proprio (le uova, la cottura) oppure della sua famiglia (le polveri, il gusto) */
+/* Insieme di varianti di un alimento: proprio (le uova, la cottura) oppure della sua famiglia (le polveri, il gusto).
+   Con più insiemi (lo smoothie: gusto e base liquida) è il primo; tutti li dà optionSetsOf. */
 function optionSetOf(food){
   if(!food) return null;
+  if(food.optionSets) return OPTION_SETS[food.optionSets[0]];
   if(food.optionSet) return OPTION_SETS[food.optionSet];
   const fam = familyOfFood(food.id);
   return fam && fam.optionSet ? OPTION_SETS[fam.optionSet] : null;
 }
 
+/* Con più insiemi di varianti la scelta è una stringa sola con una parte per insieme, es. "cioccolato+acqua":
+   passa così com'è in carrello, diario e ordini, che già conservano un'unica variante per alimento */
+const OPT_SEP = '+';
+
+function optionSetsOf(food){
+  if(food && food.optionSets) return food.optionSets.map(k=>OPTION_SETS[k]);
+  const set = optionSetOf(food);
+  return set ? [set] : [];
+}
+
 /* Versione mostrabile: se ha varianti applico quella predefinita */
 function displayFood(food, optId){
-  const set = optionSetOf(food);
-  if(!set) return food;
-  return effectiveFood(food, optId || set.choices[0].id);
+  if(!optionSetOf(food)) return food;
+  return effectiveFood(food, optId || defaultOptFor(food));
 }
 
 function familyById(id){ return FAMILIES.find(f=>f.id===id); }
@@ -5275,6 +5328,7 @@ function effectiveFood(food, optId){
   const set = optionSetOf(food);
   if(!set) return food;
   if(!optId) return food.prep ? {...food, name:`${tName(food)} · ${food.prep}`, _nameReady:true} : food;
+  if(food.optionSets && food.optionSets.length > 1) return effectiveFoodMulti(food, optId);
   const ch = set.choices.find(x=>x.id===optId);
   if(!ch) return food;
   const baseName = tName(food);
@@ -5294,9 +5348,30 @@ function effectiveFood(food, optId){
   };
 }
 
+/* Smoothie: il gusto si applica come per le polveri (nome e valori), poi ogni altra parte aggiunge il suo
+   nome e, per il liquido, i valori in proporzione alla polvere, il sovrapprezzo e gli allergeni */
+function effectiveFoodMulti(food, optId){
+  const [first, ...rest] = food.optionSets;
+  const parts = String(optId).split(OPT_SEP);
+  let out = effectiveFood({...food, optionSets:null, optionSet:first}, parts[0]);
+  out = {...out, name: out._nameReady ? out.name : tName(food), _nameReady:true, extraAllergens:[]};
+  rest.forEach((key, i)=>{
+    const set = OPTION_SETS[key];
+    const ch = set.choices.find(x=>x.id===parts[i+1]) || set.choices[0];
+    out.name += ' · ' + tPFlavorName(ch);
+    if(ch.add){
+      const k = (set.mlPer100g || 0) / 100;
+      out.kcal += ch.add.kcal * k; out.p += ch.add.p * k; out.c += ch.add.c * k; out.f += ch.add.f * k;
+    }
+    out.price += ch.priceDelta || 0;
+    if(ch.allergens) out.extraAllergens.push(...ch.allergens);
+  });
+  return out;
+}
+
 function defaultOptFor(food){
-  const set = optionSetOf(food);
-  return set ? set.choices[0].id : null;
+  const sets = optionSetsOf(food);
+  return sets.length ? sets.map(s=>s.choices[0].id).join(OPT_SEP) : null;
 }
 
 /* Carboidrati e proteine del menu: solo quelli che stanno in una famiglia. Crema di riso, avena e le
@@ -6844,6 +6919,7 @@ UI_I18N.en = {
   "dessert.flavor": "Flavor",
   "detail.shape": "Shape",
   "detail.cooking": "Cooking",
+  "detail.liquid": "Liquid base",
   "detail.composition": "Composition",
 
   /* detail */
@@ -8090,6 +8166,8 @@ FOOD_I18N.en = {
   "p25": { "name": "Soy", "desc": "Pan-fried soy chunks: complete plant protein with a meat-like texture." },
   "p26": { "name": "Cottage Cheese", "desc": "Low-fat fresh cottage cheese: lots of protein, little fat." },
   "p27": { "name": "Light Mozzarella", "desc": "Reduced-fat fresh mozzarella, great with vegetables and cherry tomatoes." },
+  "p29": {"name": "Casein Protein Smoothie", "desc": "Micellar casein blended with the liquid base of your choice (about 250 ml per 30 g of powder): slow release, suited to the evening or between meals."},
+  "p28": {"name": "Isolate Protein Smoothie", "desc": "Whey isolate protein blended with the liquid base of your choice (about 250 ml per 30 g of powder): fast absorption, ideal after training."},
   "p8": { "name": "Whole Eggs", "desc": "Whole eggs, a complete protein source with all essential amino acids. Choose them sunny side up, hard-boiled or scrambled." },
   "unit_p8": { "one": "egg", "many": "eggs" },
   "unit_pill": { "one": "pill", "many": "pills" },
@@ -8110,7 +8188,7 @@ FOOD_I18N.en = {
   "sup14": { "name": "B-Complex Vitamins", "desc": "The B-group vitamins in a single capsule, to take at breakfast." },
   "sup15": { "name": "Omega-3", "desc": "Omega-3 fatty acids (EPA and DHA) from fish oil. One capsule." },
   "sup16": { "name": "Magnesium", "desc": "Magnesium for the evening routine. One capsule." },
-  "sup17": { "name": "Casein Protein", "desc": "Slow-release micellar casein, suited to the evening. 30 g serving." },
+  "sup17": {"name": "Casein Protein Smoothie", "desc": "Slow-release micellar casein, blended with the liquid base of your choice (about 250 ml per 30 g). Suited to the evening. 30 g serving."},
   "sup19": { "name": "Ashwagandha", "desc": "Plant from the Ayurvedic tradition, for the evening relaxation routine. One capsule." },
   "sup20": { "name": "Melatonin", "desc": "Melatonin for the evening. One tablet." },
   "sup21": { "name": "Complete Intra-Workout", "desc": "1.5 L bottle with the whole intra-workout already dissolved: carbohydrates, amino acids, salts and active ingredients. To drink during training." },
@@ -8130,7 +8208,7 @@ FOOD_I18N.en = {
   "sup5": { "name": "Cluster Dextrin", "desc": "Slow-release carbohydrate: steady energy during effort, gentle on the stomach." },
   "sup6": { "name": "Electrolytes", "desc": "Sodium, potassium and magnesium to replace what's lost through sweat." },
   "sup7": { "name": "Creatine Monohydrate Creapure", "desc": "Ultra-pure creatine monohydrate (Creapure®), the benchmark for strength and recovery. 1 g pills." },
-  "sup8": { "name": "Whey Isolate Protein", "desc": "Fast-absorbing whey isolate, for post-workout recovery." },
+  "sup8": {"name": "Isolate Protein Smoothie", "desc": "Fast-absorbing whey isolate, blended with the liquid base of your choice (about 250 ml per 30 g), for post-workout recovery."},
   "sup9": { "name": "Glutamine", "desc": "Amino acid that supports muscle recovery and immune function. 1 g pills." },
   "f1": { "name": "Avocado", "desc": "Fresh sliced avocado, creamy, rich in monounsaturated fats and fibre." },
   "f2": { "name": "Almonds", "desc": "Shelled unsalted almonds, crunchy, a concentrated source of good fats and vitamin E." },
@@ -8193,6 +8271,9 @@ FOOD_I18N.en = {
   "pflavor_fragola": { "name": "Strawberry", "sub": "Fresh, sugar-free" },
   "pflavor_caramello": { "name": "Salted Caramel", "sub": "Sweet with a salty note" },
   "pflavor_peanut": { "name": "Peanut Butter", "sub": "Peanut butter" },
+  "pflavor_mandorla": {"name": "Zero almond drink", "sub": "Sugar-free, plant-based · tree nuts"},
+  "pflavor_lattesl": {"name": "Lactose-free skimmed milk", "sub": "Creamier, with a little extra protein"},
+  "pflavor_acqua": {"name": "Water", "sub": "No extra calories"},
   "pflavor_occhio": { "name": "Sunny side up", "sub": "White set, soft yolk" },
   "pflavor_spaghetti": { "name": "Spaghetti", "sub": "Long and thin, the classic" },
   "pflavor_penne": { "name": "Penne rigate", "sub": "Short and ridged: they hold the sauce" },
@@ -8208,6 +8289,7 @@ FOOD_I18N.en = {
   "fam-riso": { "name": "Rice" },
   "fam-cereali": { "name": "Grains" },
   "fam-pasta": { "name": "Pasta" },
+  "fam-smoothie": {"name": "Protein smoothies"},
   "fam-pane": { "name": "Bread" },
   "fam-patate": { "name": "Potatoes" },
   "fam-colaz": { "name": "Breakfast" },
@@ -8758,6 +8840,7 @@ UI_I18N.fr = {
   "dessert.flavor": "Parfum",
   "detail.shape": "Format",
   "detail.cooking": "Cuisson",
+  "detail.liquid": "Base liquide",
   "detail.composition": "Composition",
 
   /* detail */
@@ -10004,6 +10087,8 @@ FOOD_I18N.fr = {
   "p25": { "name": "Soja", "desc": "Morceaux de soja sautés : protéines végétales complètes, texture proche de la viande." },
   "p26": { "name": "Cottage Cheese", "desc": "Fromage frais en grains maigre : beaucoup de protéines, peu de graisses." },
   "p27": { "name": "Mozzarella Light", "desc": "Mozzarella allégée, fraîche et filante, parfaite avec légumes et tomates cerises." },
+  "p29": {"name": "Smoothie Protéines Caséine", "desc": "Caséine micellaire mixée avec la base liquide de votre choix (environ 250 ml pour 30 g de poudre) : libération lente, idéale le soir ou entre les repas."},
+  "p28": {"name": "Smoothie Protéines Isolat", "desc": "Protéines de lactosérum isolées mixées avec la base liquide de votre choix (environ 250 ml pour 30 g de poudre) : absorption rapide, idéal après l'entraînement."},
   "p8": { "name": "Œufs Entiers", "desc": "Œufs entiers, source de protéines complète avec tous les acides aminés essentiels. Au choix : au plat, durs ou brouillés." },
   "unit_p8": { "one": "œuf", "many": "œufs" },
   "unit_pill": { "one": "comprimé", "many": "comprimés" },
@@ -10024,7 +10109,7 @@ FOOD_I18N.fr = {
   "sup14": { "name": "Vitamines du complexe B", "desc": "Les vitamines du groupe B réunies en une seule gélule, à prendre au petit-déjeuner." },
   "sup15": { "name": "Oméga-3", "desc": "Acides gras oméga-3 (EPA et DHA) issus d'huile de poisson. Une gélule." },
   "sup16": { "name": "Magnésium", "desc": "Magnésium pour la routine du soir. Une gélule." },
-  "sup17": { "name": "Protéines de caséine", "desc": "Caséine micellaire à libération lente, indiquée le soir. Portion de 30 g." },
+  "sup17": {"name": "Smoothie Protéines Caséine", "desc": "Caséine micellaire à libération lente, mixée avec la base liquide de votre choix (environ 250 ml pour 30 g). Idéale le soir. Portion de 30 g."},
   "sup19": { "name": "Ashwagandha", "desc": "Plante de la tradition ayurvédique, pour la routine de détente du soir. Une gélule." },
   "sup20": { "name": "Mélatonine", "desc": "Mélatonine pour le soir. Un comprimé." },
   "sup21": { "name": "Intra-workout complet", "desc": "Bouteille de 1,5 L avec tout l'intra-workout déjà dissous : glucides, acides aminés, sels et principes actifs. À boire pendant l'entraînement." },
@@ -10044,7 +10129,7 @@ FOOD_I18N.fr = {
   "sup5": { "name": "Cyclodextrines", "desc": "Glucide à libération progressive : énergie constante pendant l'effort, sans alourdir l'estomac." },
   "sup6": { "name": "Électrolytes", "desc": "Sodium, potassium et magnésium pour compenser ce qui est perdu avec la sueur." },
   "sup7": { "name": "Créatine Monohydrate Creapure", "desc": "Créatine monohydrate ultra-pure (Creapure®), la référence pour la force et la récupération. Comprimés de 1 g." },
-  "sup8": { "name": "Protéine Whey Isolat", "desc": "Isolat de whey à absorption rapide, pour la récupération après l'entraînement." },
+  "sup8": {"name": "Smoothie Protéines Isolat", "desc": "Isolat de lactosérum à absorption rapide, mixé avec la base liquide de votre choix (environ 250 ml pour 30 g), pour la récupération après l'entraînement."},
   "sup9": { "name": "Glutamine", "desc": "Acide aminé qui soutient la récupération musculaire et la fonction immunitaire. Comprimés de 1 g." },
   "f1": { "name": "Avocat", "desc": "Avocat frais en tranches, onctueux, riche en graisses monoinsaturées et en fibres." },
   "f2": { "name": "Amandes", "desc": "Amandes décortiquées non salées, croquantes, source concentrée de bonnes graisses et de vitamine E." },
@@ -10107,6 +10192,9 @@ FOOD_I18N.fr = {
   "pflavor_fragola": { "name": "Fraise", "sub": "Frais, sans sucre" },
   "pflavor_caramello": { "name": "Caramel Salé", "sub": "Doux avec une note salée" },
   "pflavor_peanut": { "name": "Beurre de Cacahuète", "sub": "Beurre de cacahuète" },
+  "pflavor_mandorla": {"name": "Boisson à l'amande zéro", "sub": "Sans sucres, végétale · fruits à coque"},
+  "pflavor_lattesl": {"name": "Lait écrémé sans lactose", "sub": "Plus onctueux, un peu plus de protéines"},
+  "pflavor_acqua": {"name": "Eau", "sub": "Aucune calorie en plus"},
   "pflavor_occhio": { "name": "Au plat", "sub": "Blanc cuit, jaune coulant" },
   "pflavor_spaghetti": { "name": "Spaghetti", "sub": "Longs et fins, le classique" },
   "pflavor_penne": { "name": "Penne rigate", "sub": "Courtes et striées : elles retiennent la sauce" },
@@ -10122,6 +10210,7 @@ FOOD_I18N.fr = {
   "fam-riso": { "name": "Riz" },
   "fam-cereali": { "name": "Céréales" },
   "fam-pasta": { "name": "Pâtes" },
+  "fam-smoothie": {"name": "Smoothies protéinés"},
   "fam-pane": { "name": "Pain" },
   "fam-patate": { "name": "Pommes de terre" },
   "fam-colaz": { "name": "Petit-déjeuner" },
@@ -10672,6 +10761,7 @@ UI_I18N.de = {
   "dessert.flavor": "Geschmack",
   "detail.shape": "Form",
   "detail.cooking": "Garart",
+  "detail.liquid": "Flüssigkeit",
   "detail.composition": "Zusammensetzung",
 
   /* detail */
@@ -11918,6 +12008,8 @@ FOOD_I18N.de = {
   "p25": { "name": "Soja", "desc": "Gebratene Sojastücke: vollständiges Pflanzeneiweiß mit fleischähnlicher Textur." },
   "p26": { "name": "Hüttenkäse", "desc": "Magerer Hüttenkäse: viel Eiweiß, wenig Fett." },
   "p27": { "name": "Mozzarella Light", "desc": "Fettreduzierte frische Mozzarella, ideal mit Gemüse und Kirschtomaten." },
+  "p29": {"name": "Casein-Protein-Smoothie", "desc": "Mizellares Casein, gemixt mit der Flüssigkeit deiner Wahl (etwa 250 ml pro 30 g Pulver): langsame Freisetzung, ideal am Abend oder zwischen den Mahlzeiten."},
+  "p28": {"name": "Isolat-Protein-Smoothie", "desc": "Molkenprotein-Isolat, gemixt mit der Flüssigkeit deiner Wahl (etwa 250 ml pro 30 g Pulver): schnelle Aufnahme, ideal nach dem Training."},
   "p8": { "name": "Ganze Eier", "desc": "Ganze Eier, eine vollständige Proteinquelle mit allen essenziellen Aminosäuren. Wähle Spiegelei, hart gekocht oder Rührei." },
   "unit_p8": { "one": "Ei", "many": "Eier" },
   "unit_pill": { "one": "Tablette", "many": "Tabletten" },
@@ -11938,7 +12030,7 @@ FOOD_I18N.de = {
   "sup14": { "name": "B-Vitamin-Komplex", "desc": "Die B-Vitamine in einer einzigen Kapsel, zum Frühstück." },
   "sup15": { "name": "Omega-3", "desc": "Omega-3-Fettsäuren (EPA und DHA) aus Fischöl. Eine Kapsel." },
   "sup16": { "name": "Magnesium", "desc": "Magnesium für die Abendroutine. Eine Kapsel." },
-  "sup17": { "name": "Casein-Protein", "desc": "Langsam freisetzendes mizellares Casein, für den Abend. Portion à 30 g." },
+  "sup17": {"name": "Casein-Protein-Smoothie", "desc": "Langsam freisetzendes mizellares Casein, gemixt mit der Flüssigkeit deiner Wahl (etwa 250 ml pro 30 g). Ideal am Abend. Portion 30 g."},
   "sup19": { "name": "Ashwagandha", "desc": "Pflanze aus der ayurvedischen Tradition, für die abendliche Entspannungsroutine. Eine Kapsel." },
   "sup20": { "name": "Melatonin", "desc": "Melatonin für den Abend. Eine Tablette." },
   "sup21": { "name": "Komplett-Intra-Workout", "desc": "1,5-L-Flasche mit dem kompletten Intra-Workout bereits gelöst: Kohlenhydrate, Aminosäuren, Salze und Wirkstoffe. Zum Trinken während des Trainings." },
@@ -11958,7 +12050,7 @@ FOOD_I18N.de = {
   "sup5": { "name": "Cluster-Dextrin", "desc": "Kohlenhydrat mit allmählicher Freisetzung: konstante Energie während der Anstrengung, magenschonend." },
   "sup6": { "name": "Elektrolyte", "desc": "Natrium, Kalium und Magnesium zum Ausgleich des Schweißverlusts." },
   "sup7": { "name": "Kreatin-Monohydrat Creapure", "desc": "Hochreines Kreatin-Monohydrat (Creapure®), der Referenzstandard für Kraft und Erholung. Tabletten à 1 g." },
-  "sup8": { "name": "Whey-Isolat-Protein", "desc": "Schnell resorbierbares Whey-Isolat für die Erholung nach dem Training." },
+  "sup8": {"name": "Isolat-Protein-Smoothie", "desc": "Schnell aufgenommenes Molkenprotein-Isolat, gemixt mit der Flüssigkeit deiner Wahl (etwa 250 ml pro 30 g), für die Regeneration nach dem Training."},
   "sup9": { "name": "Glutamin", "desc": "Aminosäure zur Unterstützung der Muskelerholung und der Immunfunktion. Tabletten à 1 g." },
   "f1": { "name": "Avocado", "desc": "Frische Avocado in Scheiben, cremig, reich an einfach ungesättigten Fetten und Ballaststoffen." },
   "f2": { "name": "Mandeln", "desc": "Geschälte, ungesalzene Mandeln, knackig, eine konzentrierte Quelle guter Fette und Vitamin E." },
@@ -12021,6 +12113,9 @@ FOOD_I18N.de = {
   "pflavor_fragola": { "name": "Erdbeere", "sub": "Frisch, zuckerfrei" },
   "pflavor_caramello": { "name": "Gesalzenes Karamell", "sub": "Süß mit salziger Note" },
   "pflavor_peanut": { "name": "Erdnussbutter", "sub": "Erdnussbutter" },
+  "pflavor_mandorla": {"name": "Mandeldrink zero", "sub": "Ohne Zucker, pflanzlich · Schalenfrüchte"},
+  "pflavor_lattesl": {"name": "Laktosefreie Magermilch", "sub": "Cremiger, mit etwas mehr Protein"},
+  "pflavor_acqua": {"name": "Wasser", "sub": "Keine zusätzlichen Kalorien"},
   "pflavor_occhio": { "name": "Spiegelei", "sub": "Eiweiß gestockt, weiches Eigelb" },
   "pflavor_spaghetti": { "name": "Spaghetti", "sub": "Lang und dünn, der Klassiker" },
   "pflavor_penne": { "name": "Penne rigate", "sub": "Kurz und gerillt: halten die Soße" },
@@ -12036,6 +12131,7 @@ FOOD_I18N.de = {
   "fam-riso": { "name": "Reis" },
   "fam-cereali": { "name": "Getreide" },
   "fam-pasta": { "name": "Nudeln" },
+  "fam-smoothie": {"name": "Protein-Smoothies"},
   "fam-pane": { "name": "Brot" },
   "fam-patate": { "name": "Kartoffeln" },
   "fam-colaz": { "name": "Frühstück" },
@@ -12586,6 +12682,7 @@ UI_I18N.es = {
   "dessert.flavor": "Sabor",
   "detail.shape": "Formato",
   "detail.cooking": "Cocción",
+  "detail.liquid": "Base líquida",
   "detail.composition": "Composición",
 
   /* detail */
@@ -13832,6 +13929,8 @@ FOOD_I18N.es = {
   "p25": { "name": "Soja", "desc": "Trozos de soja salteados: proteína vegetal completa con textura parecida a la carne." },
   "p26": { "name": "Requesón", "desc": "Requesón fresco bajo en grasa: mucha proteína y poca grasa." },
   "p27": { "name": "Mozzarella Light", "desc": "Mozzarella baja en grasa, fresca y elástica, ideal con verduras y tomates cherry." },
+  "p29": {"name": "Batido de Proteína Caseína", "desc": "Caseína micelar batida con la base líquida que elijas (unos 250 ml por cada 30 g de polvo): liberación lenta, indicada por la noche o entre comidas."},
+  "p28": {"name": "Batido de Proteína Aislada", "desc": "Proteína aislada de suero batida con la base líquida que elijas (unos 250 ml por cada 30 g de polvo): absorción rápida, ideal después de entrenar."},
   "p8": { "name": "Huevos Enteros", "desc": "Huevos enteros, fuente proteica completa con todos los aminoácidos esenciales. Elígelos fritos, duros o revueltos." },
   "unit_p8": { "one": "huevo", "many": "huevos" },
   "unit_pill": { "one": "pastilla", "many": "pastillas" },
@@ -13852,7 +13951,7 @@ FOOD_I18N.es = {
   "sup14": { "name": "Complejo de vitamina B", "desc": "Las vitaminas del grupo B reunidas en una sola cápsula, para el desayuno." },
   "sup15": { "name": "Omega-3", "desc": "Ácidos grasos omega-3 (EPA y DHA) de aceite de pescado. Una cápsula." },
   "sup16": { "name": "Magnesio", "desc": "Magnesio para la rutina de la noche. Una cápsula." },
-  "sup17": { "name": "Proteína de caseína", "desc": "Caseína micelar de liberación lenta, indicada por la noche. Porción de 30 g." },
+  "sup17": {"name": "Batido de Proteína Caseína", "desc": "Caseína micelar de liberación lenta, batida con la base líquida que elijas (unos 250 ml por cada 30 g). Indicada por la noche. Ración de 30 g."},
   "sup19": { "name": "Ashwagandha", "desc": "Planta de la tradición ayurvédica, para la rutina de relax de la noche. Una cápsula." },
   "sup20": { "name": "Melatonina", "desc": "Melatonina para la noche. Un comprimido." },
   "sup21": { "name": "Intra-entreno completo", "desc": "Botella de 1,5 L con todo el intra-entreno ya disuelto: carbohidratos, aminoácidos, sales y principios activos. Para beber durante el entrenamiento." },
@@ -13872,7 +13971,7 @@ FOOD_I18N.es = {
   "sup5": { "name": "Ciclodextrinas", "desc": "Carbohidrato de liberación gradual: energía constante durante el esfuerzo, sin pesadez estomacal." },
   "sup6": { "name": "Electrolitos", "desc": "Sodio, potasio y magnesio para reponer lo perdido con el sudor." },
   "sup7": { "name": "Creatina Monohidrato Creapure", "desc": "Creatina monohidrato ultrapura (Creapure®), la referencia en fuerza y recuperación. Pastillas de 1 g." },
-  "sup8": { "name": "Proteína Whey Isolate", "desc": "Aislado de suero de leche de absorción rápida, para la recuperación post-entreno." },
+  "sup8": {"name": "Batido de Proteína Aislada", "desc": "Suero de leche aislado de absorción rápida, batido con la base líquida que elijas (unos 250 ml por cada 30 g), para la recuperación después de entrenar."},
   "sup9": { "name": "Glutamina", "desc": "Aminoácido que apoya la recuperación muscular y la función inmunológica. Pastillas de 1 g." },
   "f1": { "name": "Aguacate", "desc": "Aguacate fresco en láminas, cremoso, rico en grasas monoinsaturadas y fibra." },
   "f2": { "name": "Almendras", "desc": "Almendras peladas sin sal, crujientes, fuente concentrada de grasas buenas y vitamina E." },
@@ -13935,6 +14034,9 @@ FOOD_I18N.es = {
   "pflavor_fragola": { "name": "Fresa", "sub": "Fresco, sin azúcar" },
   "pflavor_caramello": { "name": "Caramelo Salado", "sub": "Dulce con toque salado" },
   "pflavor_peanut": { "name": "Mantequilla de Cacahuete", "sub": "Mantequilla de cacahuete" },
+  "pflavor_mandorla": {"name": "Bebida de almendra zero", "sub": "Sin azúcar, vegetal · frutos de cáscara"},
+  "pflavor_lattesl": {"name": "Leche desnatada sin lactosa", "sub": "Más cremoso, con algo más de proteína"},
+  "pflavor_acqua": {"name": "Agua", "sub": "Sin calorías extra"},
   "pflavor_occhio": { "name": "Fritos", "sub": "Clara cuajada, yema blanda" },
   "pflavor_spaghetti": { "name": "Espaguetis", "sub": "Largos y finos, el clásico" },
   "pflavor_penne": { "name": "Penne rigate", "sub": "Cortas y estriadas: retienen la salsa" },
@@ -13950,6 +14052,7 @@ FOOD_I18N.es = {
   "fam-riso": { "name": "Arroz" },
   "fam-cereali": { "name": "Cereales" },
   "fam-pasta": { "name": "Pasta" },
+  "fam-smoothie": {"name": "Batidos proteicos"},
   "fam-pane": { "name": "Pan" },
   "fam-patate": { "name": "Patatas" },
   "fam-colaz": { "name": "Desayuno" },
@@ -15175,6 +15278,7 @@ const DIET_OVERRIDE = {
   f7:'vegetarian', s4:'vegetarian',  // salsa a base di yogurt greco: vegetariana, non vegana
   sup8:'vegetarian',                 // whey isolate: deriva dal latte, non vegana
   sup17:'vegetarian',                // caseine: latte
+  p28:'vegetarian', p29:'vegetarian', // smoothie di proteine isolate/caseine: latte
   sup15:null,                        // omega-3 da olio di pesce: né vegetariano né vegano
   m7:'vegetarian', m8:'vegetarian', m9:'vegetarian', // pizza, pesto, sorrentina: formaggio ma niente carne/pesce
   m13:'vegan', m15:'vegetarian', m16:'vegetarian', // riso al sugo, porridge (latte), insalata con feta
@@ -15224,10 +15328,14 @@ const FOOD_ALLERGENS = {
   d3:['dairy','egg'],                                                // cheesecake proteica fit
   d4:['gluten','dairy'],                                             // tiramisù fit (savoiardi, formaggi)
   sup8:['dairy'],                                                    // proteine whey isolate
+  p28:['dairy'], p29:['dairy'],                                      // smoothie di proteine (la mandorla aggiunge frutta a guscio: extraAllergens)
   sup17:['dairy'], sup15:['fish'],                                   // caseine, omega-3 da olio di pesce
 };
 
-function foodAllergens(food){ return (food && FOOD_ALLERGENS[food.id]) || []; }
+function foodAllergens(food){
+  const base = (food && FOOD_ALLERGENS[food.id]) || [];
+  return food && food.extraAllergens && food.extraAllergens.length ? [...new Set([...base, ...food.extraAllergens])] : base;   // es. smoothie con bevanda alla mandorla
+}
 
 /* Ritorna i motivi per cui un alimento non rispetta le preferenze/allergie
    impostate dall'utente (array vuoto se compatibile). Il vegano implica il
@@ -16083,7 +16191,7 @@ const DOMINANT_MACRO = {carb:'c', protein:'p', fat:'f'};
    Per le proteine, le fonti animali (proteine nobili — complete di tutti
    gli aminoacidi essenziali) hanno priorità e vengono mostrate per prime;
    il Tofu (unica fonte vegetale) resta disponibile ma in coda alla lista. */
-const CATEGORY_POOLS = { carb: CARB_MENU, protein: PROTEIN_MENU, fat: FAT_MENU };
+const CATEGORY_POOLS = { carb: CARB_MENU, protein: PROTEIN_MENU.filter(f=>!f.noMatch), fat: FAT_MENU };   // niente smoothie come secondo
 
 function isNobleProtein(food){ return food.animal !== false; }
 
@@ -16803,12 +16911,26 @@ function optionCards(set, chosen, action, foodId){
     <div class="ab-seg">
       ${set.choices.map(o=>`
         <button class="ab-opt cook-opt ${ch.id===o.id?'active':''}" data-action="${action}" data-opt="${o.id}">
-          <span class="cook-ic">${foodArtSvg(foodId, o.id)}</span>
+          <span class="cook-ic">${foodArtSvg(set.artId || foodId, o._artOpt || o.id)}</span>
           <span class="abo-l">${tPFlavorName(o)}</span>
         </button>`).join('')}
     </div>
     <div class="ab-note">${tPFlavorSub(ch)}</div>
   </div>`;
+}
+
+/* Più insiemi di varianti nella stessa scheda (smoothie: gusto e base liquida): ogni scelta porta con sé la
+   variante completa con cambiata solo la propria parte, così i selettori restano quelli di sempre */
+function optionPickersMulti(food, opt, action){
+  const sets = optionSetsOf(food);
+  const cur = String(opt || defaultOptFor(food)).split(OPT_SEP);
+  return sets.map((set, k)=>{
+    const withPart = id => sets.map((s, i)=> i===k ? id : (cur[i] || s.choices[0].id)).join(OPT_SEP);
+    const chosen = withPart(cur[k] || set.choices[0].id);
+    const derived = {...set, choices: set.choices.map(ch=>({...ch, id: withPart(ch.id), _artOpt: ch.id, name: tPFlavorName(ch), sub: tPFlavorSub(ch)}))};
+    if(set.kind === 'cards') return optionCards(derived, chosen, action, food.id);
+    return optionSwatches({...derived, label: uiT('dessert.flavor', set.label)}, chosen, action, null);
+  }).join('');
 }
 
 function renderFamily(params){
@@ -17060,6 +17182,7 @@ function renderDetail(params){
     ${(()=>{
       const set = optionSetOf(raw);
       if(!set) return '';
+      if(optionSetsOf(raw).length > 1) return optionPickersMulti(raw, opt, 'detail-option');
       if(set.kind === 'cards') return optionCards(set, opt, 'detail-option', raw.id);
       return optionSwatches({...set, label: uiT('dessert.flavor', set.label)}, opt, 'detail-option', null);
     })()}
