@@ -9,7 +9,7 @@
    - Notifiche dell'ordine: toccandone una si apre (o si porta davanti) l'app su quell'ordine. */
 'use strict';
 
-const VERSION = '948c244e1abf';
+const VERSION = '25d58099c028';
 const APP_CACHE = 'macros-app-' + VERSION;
 const LIB_CACHE = 'macros-lib-v1';
 const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
