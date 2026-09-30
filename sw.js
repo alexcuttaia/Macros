@@ -9,11 +9,11 @@
    - Notifiche dell'ordine: toccandone una si apre (o si porta davanti) l'app su quell'ordine. */
 'use strict';
 
-const VERSION = '194c4cc4b9d1';
+const VERSION = 'e7c83617a11f';
 const APP_CACHE = 'macros-app-' + VERSION;
 const LIB_CACHE = 'macros-lib-v1';
-const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
-  './icons/icon-maskable-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png'];
+const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png?v=7eaad548', './icons/icon-512.png?v=7eaad548',
+  './icons/icon-maskable-512.png?v=7eaad548', './icons/apple-touch-icon.png?v=7eaad548', './icons/favicon-32.png?v=7eaad548'];
 const LIB_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com', 'cdnjs.cloudflare.com', 'cdn.jsdelivr.net'];
 
 self.addEventListener('install', event=>{
