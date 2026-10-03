@@ -268,7 +268,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 .final h2{font-size:clamp(38px,5.6vw,72px);line-height:1.04;letter-spacing:-.03em;}
 .final p{margin:22px auto 0;max-width:30em;color:var(--text-2);font-size:18px;}
 footer{border-top:1px solid var(--line);font-size:14px;color:var(--text-3);}
-footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:26px;padding-bottom:calc(26px + env(safe-area-inset-bottom));}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;padding-top:26px;padding-bottom:calc(26px + env(safe-area-inset-bottom));}
 
 /* Calcolo dei macronutrienti */
 .calc{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:72px;align-items:center;}
@@ -412,14 +412,14 @@ html:not(.motion-ok) .meal[aria-hidden="true"]{display:none;}
 .sm-tile:hover img{transform:scale(1.08);}
 .sm-tile:focus-visible{outline:3px solid #3CBDD2;outline-offset:4px;}
 .sm-tile[aria-checked="true"]{box-shadow:0 0 0 3px var(--mint),0 24px 40px -18px rgba(0,0,0,.6);}
-.sm-podium{position:absolute;left:50%;top:560px;width:440px;height:96px;margin-left:-220px;border-radius:50%;z-index:2;
+.sm-podium{position:absolute;left:50%;top:520px;width:440px;height:96px;margin-left:-220px;border-radius:50%;z-index:2;
   background:radial-gradient(60% 70% at 50% 35%,color-mix(in srgb,var(--flav) 22%,#2A2D33),#16171B 75%);box-shadow:inset 0 2px 0 rgba(255,255,255,.08),0 30px 50px -20px rgba(0,0,0,.8);}
-.sm-glass{position:absolute;left:50%;top:76px;width:300px;height:516px;margin-left:-150px;z-index:3;filter:drop-shadow(0 30px 34px rgba(0,0,0,.5));}   /* una sola ombra sull'insieme: con due bicchieri sovrapposti durante il cambio di gusto si sommavano in un alone nero */
+.sm-glass{position:absolute;left:50%;top:40px;width:300px;height:516px;margin-left:-150px;z-index:3;filter:drop-shadow(0 30px 34px rgba(0,0,0,.5));}   /* una sola ombra sull'insieme: con due bicchieri sovrapposti durante il cambio di gusto si sommavano in un alone nero */
 .sm-glass img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;}
-.sm-info{position:absolute;left:50%;top:612px;transform:translateX(-50%);z-index:4;text-align:center;width:min(520px,90%);}
+.sm-info{position:absolute;left:50%;top:563px;transform:translateX(-50%);z-index:4;text-align:center;width:min(520px,90%);}
 .sm-name{position:relative;height:1.2em;overflow:hidden;font:600 30px/1.2 'Poppins',sans-serif;letter-spacing:-.02em;}
 .sm-name span{position:absolute;left:0;right:0;}
-.sm-vals{display:flex;justify-content:center;gap:8px;margin:12px 0 0;}
+.sm-vals{display:flex;justify-content:center;gap:8px;margin:20px 0 0;}
 .sm-vals div{display:flex;align-items:baseline;gap:5px;padding:7px 12px;border-radius:999px;background:rgba(20,21,25,.55);box-shadow:inset 0 0 0 1px var(--line-2);font-size:13.5px;}
 .sm-vals dt{color:var(--text-2);}
 .sm-vals dd{margin:0;font-weight:600;}
@@ -440,9 +440,10 @@ html:not(.motion-ok) .meal[aria-hidden="true"]{display:none;}
   .smoothie{padding:20px 0 96px;}
   .sm-stage{--R:330px;--cy:610px;--tile:92px;height:630px;border-radius:28px;}
   .sm-tile{border-radius:22px;}
-  .sm-podium{top:372px;width:250px;height:58px;margin-left:-125px;}
-  .sm-glass{top:96px;width:176px;height:303px;margin-left:-88px;}
-  .sm-info{top:430px;}
+  .sm-podium{top:346px;width:250px;height:58px;margin-left:-125px;}
+  .sm-glass{top:72px;width:176px;height:303px;margin-left:-88px;}
+  .sm-info{top:366px;}
+  .sm-vals{margin-top:16px;}
   .sm-name{font-size:24px;}
   .sm-vals{flex-wrap:wrap;gap:6px;}
   .sm-vals div{padding:5px 10px;font-size:12.5px;}
@@ -522,6 +523,7 @@ html:not(.motion-ok) .meal[aria-hidden="true"]{display:none;}
   .nav .btn-sm{padding:0 12px;font-size:13px;}
 }
 footer .foot-credit{flex-basis:100%;}   /* riga a sé, sotto © anno */
+.final .bp-msg{min-height:1.5em;margin-top:16px;font-size:15px;color:var(--text-2);}   /* business plan: il PDF non c'è ancora */
 </style>
 </head>
 <body>
@@ -960,7 +962,12 @@ footer .foot-credit{flex-basis:100%;}   /* riga a sé, sotto © anno */
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="m7.5 10 4.5 4.5 4.5-4.5"/><path d="M5 20h14"/></svg>
           Installa l'app
         </a>
+        <button class="btn btn-quiet" type="button" id="bp-btn" aria-describedby="bp-msg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+          Business plan (PDF)
+        </button>
       </div>
+      <p class="bp-msg" id="bp-msg" role="status"></p>
     </div>
   </section>
 </main>
@@ -1196,8 +1203,8 @@ footer .foot-credit{flex-basis:100%;}   /* riga a sé, sotto © anno */
         // il nuovo frullato riempie il bicchiere dal basso, quello vecchio si ritira
         if(!samePhoto) A(img, {clipPath:['inset(100% 0 0 0)','inset(0% 0 0 0)'], transform:['translateY(14px) scale(.98)','translateY(0) scale(1)']}, {duration:1, ease});
         old.forEach(o=> A(o, {opacity:[1,0]}, {duration:.7, ease, delay:.25}).then(()=> o.remove()));
-        if(oldName) A(oldName, {transform:['translateY(0)','translateY(-110%)'], opacity:[1,0]}, {duration:.5, ease}).then(()=> oldName.remove());
-        A(nn, {transform:['translateY(110%)','translateY(0)'], opacity:[0,1]}, {duration:.6, ease, delay:.1});
+        if(oldName) A(oldName, {transform:['translateY(0)','translateY(-60%)'], opacity:[1,0], filter:['blur(0px)','blur(6px)']}, {duration:.25, ease:'easeIn'}).then(()=> oldName.remove());
+        nn.style.opacity = 0; A(nn, {transform:['translateY(60%)','translateY(0)'], opacity:[0,1], filter:['blur(6px)','blur(0px)']}, {duration:.5, ease, delay:.25});
       } else { old.forEach(o=> o.remove()); if(oldName) oldName.remove(); }
     }
     function go(delta, user){
@@ -1386,6 +1393,10 @@ footer .foot-credit{flex-basis:100%;}   /* riga a sé, sotto © anno */
   // rete lenta o Motion assente: dopo 4 s la pagina si mostra comunque, ferma
   setTimeout(()=>{ if(motionOk && !started) showAll(); }, 4000);
 })();
+</script>
+<script>
+  // business plan: finché il PDF non c'è, il pulsante avvisa soltanto
+  document.getElementById('bp-btn').addEventListener('click', ()=>{ document.getElementById('bp-msg').textContent = 'Download disponibile a breve'; });
 </script>
 </body>
 </html>

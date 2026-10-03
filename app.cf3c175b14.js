@@ -599,10 +599,10 @@ const PHOTO_MAP = {
   c21: 'photos/c21.6667c39980.webp',
   c22: 'photos/c22.ce85873978.webp',
   // dolci (cartella «Nuovi piatti 6»)
-  d1: 'photos/d1.8a3baae9a2.webp', d2: 'photos/d2.6553b422fd.webp',
+  d1: 'photos/d1.8a3baae9a2.webp', d2: 'photos/d2.5934359acb.webp',
   // gelato: una coppa per gusto (cartella «Gelato»); d2 da solo = cioccolato, il primo gusto
-  'd2/cioccolato': 'photos/d2-cioccolato.6553b422fd.webp', 'd2/vaniglia': 'photos/d2-vaniglia.51cc6fa21c.webp', 'd2/pistacchio': 'photos/d2-pistacchio.32394bdaea.webp',
-  'd2/fragola': 'photos/d2-fragola.44d6889846.webp', 'd2/caffe': 'photos/d2-caffe.e32e74d149.webp', 'd2/nocciola': 'photos/d2-nocciola.a865f5d828.webp', d3: 'photos/d3.48d6468485.webp', d4: 'photos/d4.85b14627f9.webp',
+  'd2/cioccolato': 'photos/d2-cioccolato.5934359acb.webp', 'd2/vaniglia': 'photos/d2-vaniglia.afcee3dcc4.webp', 'd2/pistacchio': 'photos/d2-pistacchio.7ebb09aa0c.webp',
+  'd2/fragola': 'photos/d2-fragola.cff5ecfb00.webp', 'd2/caffe': 'photos/d2-caffe.b05e488dac.webp', 'd2/nocciola': 'photos/d2-nocciola.d803ff1cc9.webp', d3: 'photos/d3.48d6468485.webp', d4: 'photos/d4.85b14627f9.webp',
   c23: 'photos/c23.5888b74e77.webp',
   c24: 'photos/c24.dd223b3280.webp',
   'sup22/jchoc': 'photos/sup22-jchoc.319775d3bf.webp',
