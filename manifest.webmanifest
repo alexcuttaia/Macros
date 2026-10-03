@@ -17,6 +17,13 @@
     {"src": "icons/icon-512.png?v=7eaad548", "sizes": "512x512", "type": "image/png", "purpose": "any"},
     {"src": "icons/icon-maskable-512.png?v=7eaad548", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
   ],
+  "screenshots": [
+    {"src": "screenshots/home.d858906020.webp", "sizes": "750x1624", "type": "image/webp", "form_factor": "narrow", "label": "Home: scegli dove mangiare e crea il tuo pasto"},
+    {"src": "screenshots/menu.55d7df7322.webp", "sizes": "750x1624", "type": "image/webp", "form_factor": "narrow", "label": "Menu: piatti pronti con macro e calorie"},
+    {"src": "screenshots/piatto.205212fdbb.webp", "sizes": "750x1624", "type": "image/webp", "form_factor": "narrow", "label": "Scheda del piatto"},
+    {"src": "screenshots/computer.5a89302a37.webp", "sizes": "800x500", "type": "image/webp", "form_factor": "wide", "label": "MACRO'S sul computer"}
+  ],
+  "prefer_related_applications": false,
   "shortcuts": [
     {"name": "Diario", "short_name": "Diario", "url": "./?view=diary", "icons": [{"src": "icons/icon-192.png?v=7eaad548", "sizes": "192x192"}]},
     {"name": "Menu", "short_name": "Menu", "url": "./?view=menu", "icons": [{"src": "icons/icon-192.png?v=7eaad548", "sizes": "192x192"}]},
