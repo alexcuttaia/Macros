@@ -2133,7 +2133,7 @@ button.nutri-stat:active{transform:scale(.97);}
 @media (prefers-reduced-motion: reduce){.pd-in,.pd-swap{animation:none;}.pd-old{display:none;}}
 
 /* ============ Match: schermata a gradiente, in linea con le altre ============ */
-.match-hero{margin-top:16px;}
+.match-hero{margin-top:0;}   /* subito sotto il logo, come «Dove vuoi mangiare?» in Home */
 .preset-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 6px;}
 .preset-row::-webkit-scrollbar{display:none;}
 .preset-chip{flex-shrink:0;padding:10px 16px;border-radius:100px;background:var(--surface);font-size:13px;font-weight:700;
@@ -2971,3 +2971,14 @@ body.otb-on.has-pwa-update .toast{bottom:calc(250px + env(safe-area-inset-bottom
 .mt-chip{min-height:36px;padding:7px 12px;border-radius:100px;background:var(--surface-2);font-size:12px;font-weight:700;color:var(--ink);}
 .mt-chip.active{background:var(--accent-dim);outline:1.5px solid var(--accent);}
 .mt-qty{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;}
+
+/* Info e supporto: crediti ed easter egg dei coriandoli (profile.js, confettiRain) */
+.ab-credits{margin:22px 8px 0;text-align:center;font-size:11.5px;line-height:1.5;color:var(--muted);}
+.about-card .ab-logo{cursor:default;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+.confetti-rain{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
+.confetti-rain i{position:absolute;top:-24px;display:block;opacity:.95;animation-name:confettiFall;animation-timing-function:cubic-bezier(.3,.6,.5,1);animation-fill-mode:both;}
+@keyframes confettiFall{from{transform:translate(0,0) rotate(0);}to{transform:translate(var(--dx),110vh) rotate(var(--rot));}}
+/* ® accanto alla scritta «macro's» (in basso nel logo con la scritta sotto), non nell'angolo vuoto in alto a destra */
+.about-card .ab-reg{margin-top:60px;margin-left:-2px;}
+/* Home: «Dove vuoi mangiare?» subito sotto il logo (il margine della sezione si sommava alla barra in alto) */
+.choice-block.where-block{margin-top:0;}
