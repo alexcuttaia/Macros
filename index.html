@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://accounts.google.com https://appleid.cdn-apple.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://cdn.jsdelivr.net https://*.googleusercontent.com; font-src 'self'; connect-src 'self' https://nominatim.openstreetmap.org https://router.project-osrm.org https://world.openfoodfacts.org https://*.supabase.co https://openidconnect.googleapis.com https://*.googleusercontent.com https://accounts.google.com; frame-src https://accounts.google.com https://appleid.apple.com; media-src 'self' blob:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#F6F7FA" media="(prefers-color-scheme: light)">
@@ -45,7 +46,7 @@
 <link rel="preload" href="fonts/inter-latin.1dc044f482.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/poppins-700-latin.6af69d307c.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/poppins-800-latin.4fe5f87dec.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="app.adbbe2da8a.css">
+<link rel="stylesheet" href="app.ce1fd1d972.css">
 </head>
 <body>
 <div class="splash-screen" id="splash-screen"><div class="splash-anim" id="splash-anim"></div></div>
@@ -56,11 +57,11 @@
   <main id="view"></main>
   <div id="order-tracker-bar"></div>
   <div id="bottomnav"></div>
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div id="modal-root"></div>
 </div>
 <!-- Nucleo: utilità, azioni, stato, icone, finestre, navigazione, componenti condivisi -->
 <script src="lottie_light.min.0b26510b44.js"></script>
-<script src="app.cf3c175b14.js"></script>
+<script src="app.020cbabefe.js"></script>
 </body>
 </html>

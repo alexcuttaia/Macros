@@ -245,7 +245,7 @@ html[data-theme="dark"] .brand-logo-dark{display:flex;}
 @media (prefers-reduced-motion: reduce){.icon-btn.cart-bump svg,.icon-btn.cart-bump .badge{animation:none;}}
 .back-row{
   display:flex;align-items:center;gap:12px;padding:12px 20px;
-  position:sticky;top:78px;z-index:36;
+  position:sticky;top:var(--topbar-h,78px);z-index:36;   /* il valore esatto lo scrive render() (syncStickyOffsets) */
   background:var(--bg);
 }
 .back-btn svg{width:18px;height:18px;}
@@ -537,7 +537,7 @@ html[data-theme="dark"] .fp{border-color:var(--surface);background:var(--surface
 
 /* ---------- Tabs / chips ---------- */
 .tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 20px 12px;}
-#menubar{position:sticky;top:78px;z-index:38;background:var(--bg);padding-bottom:14px;}   /* spazio sotto le categorie (prima c'era la frase di sottotitolo) */
+#menubar{position:sticky;top:var(--topbar-h,78px);z-index:38;background:var(--bg);padding-bottom:14px;}   /* spazio sotto le categorie (prima c'era la frase di sottotitolo) */
 .tabs::-webkit-scrollbar{display:none;}
 .tab{
   flex-shrink:0;padding:10px 16px;border-radius:100px;background:var(--surface);
@@ -1278,6 +1278,7 @@ body.otb-on #app-shell{padding-bottom:184px;}
 .flavor-card:active{transform:scale(.96);}
 .fl-dot{
   position:relative;width:38px;height:38px;border-radius:50%;
+  background:var(--sw);   /* ripiego: browser senza color-mix (Safari/iOS < 16.2), il colore del gusto resta */
   background:radial-gradient(circle at 32% 28%, color-mix(in srgb,var(--sw) 45%,#fff) 0, var(--sw) 58%, color-mix(in srgb,var(--sw) 78%,#000) 100%);
   box-shadow:inset 0 0 0 1px rgba(36,37,42,.1), 0 7px 10px -6px color-mix(in srgb,var(--sw) 75%,#000);
 }
@@ -1642,7 +1643,8 @@ html[data-theme="dark"] .where-block .choice-card .cc-ic{color:#fff;}
 .confirm-table{margin-top:14px;background:rgba(255,255,255,.22);color:#fff;font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;padding:10px 20px;border-radius:100px;}
 
 /* ---------- Modale interno ---------- */
-.modal-backdrop{position:fixed;inset:0;z-index:200;background:rgba(20,21,25,.45);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;}
+.modal-card[tabindex="-1"]:focus{outline:none;}   /* il focus va sulla finestra (core/overlays.js): nessun anello attorno a tutta la finestra */
+.modal-backdrop{position:fixed;inset:0;z-index:200;background:rgba(20,21,25,.45);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;}
 .modal-card{background:var(--surface);border-radius:var(--radius-l);padding:22px;width:100%;max-width:360px;box-shadow:0 24px 60px -20px rgba(20,21,25,.5);}
 .modal-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:18px;}
 .modal-msg{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.55;}
@@ -1787,7 +1789,7 @@ html[data-theme="dark"] .where-block .choice-card .cc-ic{color:#fff;}
      telefono il testo andava a capo su più righe */
   position:fixed;bottom:calc(118px + env(safe-area-inset-bottom,0px));left:16px;right:16px;margin:0 auto;width:fit-content;max-width:480px;
   background:var(--ink);color:var(--on-ink);padding:12px 20px;border-radius:24px;
-  font-size:13px;font-weight:700;z-index:100;box-shadow:var(--shadow);
+  font-size:13px;font-weight:700;z-index:210;box-shadow:var(--shadow);   /* sopra le finestre (z-index 200): «Valore non valido» di un prompt si legge */
   display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;
 }
 .toast.show{opacity:1;transform:translateY(-6px);}
@@ -2181,7 +2183,7 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 .mms-val{display:flex;align-items:baseline;gap:5px;margin-top:6px;}
 .mms-val b{font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;color:var(--mms-col);line-height:1;}
 .mms-val span{font-size:11.5px;font-weight:600;color:var(--muted);}
-.mms-track{height:5px;border-radius:100px;background:color-mix(in srgb, var(--mms-col) 18%, var(--surface));margin-top:8px;overflow:hidden;}
+.mms-track{height:5px;border-radius:100px;background:var(--line);background:color-mix(in srgb, var(--mms-col) 18%, var(--surface));margin-top:8px;overflow:hidden;}
 .mms-track i{display:block;height:100%;border-radius:inherit;background:var(--mms-col);}
 .mms-pricebig b{color:var(--accent);}
 .mms-note{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px;}
@@ -2215,7 +2217,7 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 /* interruttori a segmenti (Al tavolo / Ritiro / Delivery, calcolo, ...) */
 .seg-btn.active{background:var(--grad-green);color:#fff;box-shadow:0 10px 18px -12px var(--glow-green);}
 /* campo attivo */
-.text-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent);}
+.text-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(92,184,92,.18);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent);}   /* rgba: browser senza color-mix */
 /* stati vuoti: emoji in un cerchio morbido */
 .empty-state .glyph{display:flex;align-items:center;justify-content:center;width:88px;height:88px;margin:0 auto 14px;border-radius:50%;
   background:var(--accent-dim);font-size:38px;opacity:1;}
@@ -2564,7 +2566,7 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 .ot-done .ot-step.current .ot-dot::after{animation:none;opacity:0;}
 
 /* barra complessiva a tutta larghezza sul fondo della card, con un riflesso che scorre */
-.ot-bar{position:relative;overflow:hidden;height:6px;margin-top:2px;background:color-mix(in srgb, var(--line) 70%, transparent);}
+.ot-bar{position:relative;overflow:hidden;height:6px;margin-top:2px;background:var(--line);background:color-mix(in srgb, var(--line) 70%, transparent);}
 .ot-bar i{position:relative;display:block;height:100%;background:var(--grad-green);border-radius:0 6px 6px 0;overflow:hidden;width:100%;translate:calc(var(--p,0) * 100% - 100%) 0;transition:translate 1s linear;}
 .ot-bar i::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
   transform:translateX(-100%);animation:otShine 2.4s ease-in-out infinite;}
@@ -2584,7 +2586,7 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 @media (max-width:380px){.ot-hero{height:190px;}}
 
 /* Versione di prova: accesso diretto senza iscrizione (schermata di accesso e passi dell'iscrizione) */
-.welcome-demo{background:transparent;box-shadow:none;border:1.5px dashed color-mix(in srgb, var(--accent) 55%, transparent);}
+.welcome-demo{background:transparent;box-shadow:none;border:1.5px dashed var(--accent);border:1.5px dashed color-mix(in srgb, var(--accent) 55%, transparent);}
 .welcome-demo .wo-ic{background:var(--grad-green);color:#fff;}
 .welcome-demo .wo-ic svg{stroke:#fff;}
 .su-demo-skip{display:block;margin:12px auto 0;padding:6px 10px;font-size:13px;font-weight:700;color:var(--muted);
@@ -2803,6 +2805,10 @@ html[data-theme="dark"] .empty-state .empty-lottie:not(.ot-lottie-on):not(.ot-lo
 .diary-date::after{content:'';position:absolute;inset:-6px 0;}
 .link-inline::after{content:'';position:absolute;inset:-11px 0;}
 .see-all::after,.tk-link::after{content:'';position:absolute;inset:-14px -6px;}
+/* «Inserisci» e «Sincronizza» dei passi: sul telefono vanno uno sopra l'altro (4 px tra i due) e le zone allargate si
+   coprivano, così toccando «Inserisci» si apriva «Sincronizza». Ognuno si allarga solo dal suo lato. */
+.tk-stepper .tk-link:first-child::after{bottom:-2px;}
+.tk-stepper .tk-link:last-child::after{top:-2px;}
 
 /* Focus da tastiera: un anello che compare solo navigando con Tab (non al tocco né al clic).
    I campi di testo restano esattamente come prima (:where → qualunque regola esistente vince). */
