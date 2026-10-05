@@ -663,9 +663,18 @@ const LOGO_SVG_DARK = '<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="ht
    (`idSuffix`): quelli della prima copia, se è nascosta con display:none, non si risolvono e le parti a
    gradiente (icona, apostrofo) sparirebbero dalla seconda. */
 /* logo v4 (prova): wordmark minuscolo con «v» e apostrofo verdi, immagine (versione scura e chiara).
-   Per tornare al logo v3: LOGO_V4 = false */
+   Per tornare al logo v3: LOGO_V4 = false
+   logo v5 (2026-10-05, cartella «Per animazione» dell'utente): nella barra in alto solo il marchio (M, V e foglia,
+   variant 'mark'); nella pagina di accesso/iscrizione e in Info il logo con la scritta sotto (variant 'full'). */
 const LOGO_V4 = true;
-function brandLogoHtml(idSuffix=''){
+const LOGO_V5 = {
+  mark: {light:'photos/logo-mark-light.95ed028148.webp', dark:'photos/logo-mark-dark.8eaa3fb51a.webp', w:480, h:321},
+  full: {light:'photos/logo-full-light.b544c2ebba.webp', dark:'photos/logo-full-dark.317f6ea02b.webp', w:900, h:539},
+};
+function brandLogoHtml(idSuffix='', variant){
+  const v5 = variant && LOGO_V5[variant];
+  if(v5) return `<span class="brand-logo brand-logo-light"><img src="${v5.light}" alt="MACRO'S" width="${v5.w}" height="${v5.h}" draggable="false"></span>`
+    + `<span class="brand-logo brand-logo-dark"><img src="${v5.dark}" alt="MACRO'S" width="${v5.w}" height="${v5.h}" draggable="false"></span>`;
   if(LOGO_V4) return '<span class="brand-logo brand-logo-light"><img src="'+'photos/logo-light.3633b877c7.webp'.trim()+'" alt="MACRO\'S" width="931" height="256" draggable="false"></span>'
     + '<span class="brand-logo brand-logo-dark"><img src="'+'photos/logo-dark.9d31087c56.webp'.trim()+'" alt="MACRO\'S" width="931" height="256" draggable="false"></span>';
   const own = svg=> idSuffix ? svg.replace(/(mlg[LD]3)-/g, '$1'+idSuffix+'-') : svg;
@@ -885,15 +894,18 @@ const PHOTO_MAP = {
   fr7: 'photos/fr7.ad91b5c644.webp',
   fr8: 'photos/fr8.dde01fd903.webp',
 };
-/* Smoothie proteici: una foto per gusto, per tutte e quattro le voci (menu e integratori) */
+/* Smoothie proteici: una foto per gusto (cartella «Smoothie» dell'utente: isolate e caseine), per le due voci di
+   ognuno (menu e integratori). Senza gusto scelto, la foto del primo gusto. */
 const PHOTO_SMOOTHIE = {
-  neutro: 'photos/smoothie-neutro.b8e310f188.webp',
-  cioccolato: 'photos/smoothie-cioccolato.93f7b5651b.webp',
-  vaniglia: 'photos/smoothie-vaniglia.1bce9440ab.webp',
-  nocciola: 'photos/smoothie-nocciola.089551cc49.webp',
-  fragola: 'photos/smoothie-fragola.d5265fb269.webp',
-  caramello: 'photos/smoothie-caramello.4c57ff38f9.webp',
-  peanut: 'photos/smoothie-peanut.aa54ecf79b.webp',
+  iso: {
+    jchoc:'photos/smoothie-iso-jchoc.13a4824e8e.webp', jwchoc:'photos/smoothie-iso-jwchoc.c422a9f898.webp', jvan:'photos/smoothie-iso-jvan.e4b9a142ac.webp',
+    jnoc:'photos/smoothie-iso-jnoc.d99fd74514.webp', jbisc:'photos/smoothie-iso-jbisc.ff1979d072.webp', jpb:'photos/smoothie-iso-jpb.3feba97ffe.webp',
+    jcoco:'photos/smoothie-iso-jcoco.420c7b80c1.webp', jcar:'photos/smoothie-iso-jcar.6136d9d150.webp',
+  },
+  cas: {
+    jstra:'photos/smoothie-cas-jstra.4a3dbc831f.webp', jfrag:'photos/smoothie-cas-jfrag.7294c30cde.webp',
+    jvan:'photos/smoothie-cas-jvan.e4b9a142ac.webp', jbisc:'photos/smoothie-cas-jbisc.ff1979d072.webp',
+  },
 };
 /* Icone dei gusti delle proteine (cartella «gusti proteini»): al posto del pallino colorato nella scelta del gusto
    degli smoothie. Nei barattoli resta la foto del barattolo di quel gusto. */
@@ -909,12 +921,10 @@ const FLAVOR_ICON = {
   jstra:'photos/gusto-jstra.9c608ec8ce.webp',
   jfrag:'photos/gusto-jfrag.5462eab7e8.webp',
 };
-// gusti degli smoothie = gusti dei barattoli (jchoc, jvan...): la foto del gusto se c'è, altrimenti quella neutra
-const SMOOTHIE_FLAVOR_PHOTO = {jchoc:'cioccolato', jvan:'vaniglia', jnoc:'nocciola', jcar:'caramello', jpb:'peanut', jfrag:'fragola'};
-['p28','p29','sup8','sup17'].forEach(id=>{
-  PHOTO_MAP[id] = PHOTO_SMOOTHIE.neutro;
-  Object.keys(PHOTO_SMOOTHIE).forEach(g=>{ PHOTO_MAP[id+'/'+g] = PHOTO_SMOOTHIE[g]; });
-  Object.keys(SMOOTHIE_FLAVOR_PHOTO).forEach(j=>{ PHOTO_MAP[id+'/'+j] = PHOTO_SMOOTHIE[SMOOTHIE_FLAVOR_PHOTO[j]]; });
+[['p28','iso'], ['sup8','iso'], ['p29','cas'], ['sup17','cas']].forEach(([id, kind])=>{
+  const set = PHOTO_SMOOTHIE[kind];
+  PHOTO_MAP[id] = set[Object.keys(set)[0]];
+  Object.keys(set).forEach(g=>{ PHOTO_MAP[id+'/'+g] = set[g]; });
 });
 
 /* Foto di un alimento; se ha varianti si cerca prima quella della variante scelta («id/variante») */
@@ -3542,7 +3552,7 @@ const PROTEINS = [
   {id:'p28',cat:'protein',name:'Smoothie di Proteine Isolate',glyph:'🥤',optionSets:['smoothieIsolate','smoothieLiquid'],noMatch:true,
    desc:'Proteine isolate del siero del latte frullate con la base liquida che scegli (circa 250 ml ogni 30 g di polvere): assorbimento rapido, ideale nel post-allenamento.',
    kcal:375,p:88,c:3,f:1,fib:0,price:16.33,min:10,max:100,step:5,def:30},
-  {id:'p29',cat:'protein',name:'Smoothie di Proteine Caseine',glyph:'🥤',optionSets:['smoothieIsolate','smoothieLiquid'],noMatch:true,
+  {id:'p29',cat:'protein',name:'Smoothie di Proteine Caseine',glyph:'🥤',optionSets:['smoothieCasein','smoothieLiquid'],noMatch:true,
    desc:'Caseine micellari frullate con la base liquida che scegli (circa 250 ml ogni 30 g di polvere): rilascio lento, indicate la sera o tra i pasti.',
    kcal:360,p:80,c:5,f:1.5,fib:0,price:17.33,min:10,max:100,step:5,def:30},
   {id:'p14',cat:'protein',name:'Yogurt Greco 0% Grassi',glyph:'🥣',desc:'Yogurt greco magro al naturale, denso e cremoso, praticamente senza grassi: ottimo spuntino proteico. Puoi aggiungere un topping a scelta.',kcal:57,p:10,c:3.6,f:0.2,fib:0,price:1.15,min:100,max:400,step:25,def:150,topping:YOGURT_TOPPING},
@@ -3844,7 +3854,7 @@ const SUPPLEMENTS = [
   {id:'sup16',cat:'supplement',timing:[],name:'Magnesio',glyph:'',
    desc:'Magnesio per la routine serale. Una capsula.',
    unit:{g:1,one:'capsula',many:'capsule',i18n:'caps'},kcal:0,p:0,c:0,f:0,fib:0,price:0.6,portion:1,min:1,max:3,step:1},
-  {id:'sup17',cat:'supplement',timing:[],optionSets:['smoothieIsolate','smoothieLiquid'],name:'Smoothie di Proteine Caseine',glyph:'',
+  {id:'sup17',cat:'supplement',timing:[],optionSets:['smoothieCasein','smoothieLiquid'],name:'Smoothie di Proteine Caseine',glyph:'',
    desc:'Caseine micellari a rilascio lento, frullate con la base liquida che scegli (circa 250 ml ogni 30 g). Indicate la sera. Porzione da 30 g.',
    kcal:110,p:24,c:2,f:1,fib:0,price:1.8,portion:30,min:10,max:100,step:5},
   {id:'sup19',cat:'supplement',timing:[],name:'Ashwagandha',glyph:'',
@@ -4158,10 +4168,12 @@ const OPTION_SETS = {
      proporzione alla polvere (250 ml ogni 30 g, cioè ~833 ml ogni 100 g): add sono i valori per 100 ml,
      sommati a quelli della polvere; allergens quelli che il liquido aggiunge. Valori tipici da etichetta:
      latte scremato senza lattosio ~35 kcal, bevanda alla mandorla senza zuccheri ~13 kcal per 100 ml. */
-  /* Gusti degli smoothie (Isolate e Caseine): gli stessi del barattolo Elevate Whey Isolate, presi dalla loro
+  /* Gusti degli smoothie: gli stessi del loro barattolo (Whey Isolate e Caseine Micellari), presi dalla loro
      lista così restano sempre allineati. Valori nutrizionali: quelli dello smoothie, uguali per ogni gusto
      (l'etichetta del barattolo ne dà una sola tabella per tutti i gusti) */
   smoothieIsolate: {label:'Gusto', choices: PROTEIN_JARS.find(j=>j.id==='sup23').flavors.map(id=>({id, name:JAR_FLAVORS[id], sub:''}))},
+  // smoothie alle caseine: i gusti del barattolo Caseine Micellari (stracciatella, fragola, vaniglia, biscotto)
+  smoothieCasein: {label:'Gusto', choices: PROTEIN_JARS.find(j=>j.id==='sup24').flavors.map(id=>({id, name:JAR_FLAVORS[id], sub:''}))},
   smoothieLiquid: {
     label:'Base liquida', labelKey:'detail.liquid', kind:'cards', artId:'liq', mlPer100g:833,
     choices:[
@@ -9534,8 +9546,8 @@ function optionPickersMulti(food, opt, action){
     const chosen = withPart(cur[k] || set.choices[0].id);
     const derived = {...set, choices: set.choices.map(ch=>({...ch, id: withPart(ch.id), _artOpt: ch._artOpt || ch.id, name: tPFlavorName(ch), sub: tPFlavorSub(ch)}))};
     if(set.kind === 'cards') return optionCards(derived, chosen, action, food.id);
-    // gusti degli smoothie: le foto dei barattoli Whey Isolate di ogni gusto, come nella loro scheda
-    return optionSwatches({...derived, label: uiT('dessert.flavor', set.label)}, chosen, action, null, set === OPTION_SETS.smoothieIsolate ? 'sup23' : null);
+    // gusti degli smoothie: le icone dei gusti (cartella «gusti proteini», FLAVOR_ICON) al posto dei pallini
+    return optionSwatches({...derived, label: uiT('dessert.flavor', set.label)}, chosen, action);
   });
   // smoothie: prima la base liquida, poi il gusto; gli altri (Rice Krispies: gusto, poi «Con cosa?») nell'ordine dei dati
   return (food.optionSets.includes('smoothieLiquid') ? pickers.reverse() : pickers).join('');
@@ -14481,7 +14493,7 @@ function renderNotificationsPage(){
 function renderAboutPage(){
   return `
     <div class="about-card">
-      <div class="ab-logo" role="img" aria-label="MACRO'S®"><span class="ab-logo-mark">${brandLogoHtml('about')}</span><sup class="ab-reg">®</sup></div>
+      <div class="ab-logo" role="img" aria-label="MACRO'S®"><span class="ab-logo-mark">${brandLogoHtml('about', 'full')}</span><sup class="ab-reg">®</sup></div>
       <div class="ab-claim">Fitness Fast Food. Your Way.</div>
       <div class="ab-ver">${uiT('about.demoVersion','Versione demo · prototipo')}</div>
     </div>
@@ -17169,7 +17181,7 @@ function renderWelcome(){
   if(STATE.auth.screen === 'email') return renderAuthEmail();
   return `
     <div class="welcome-wrap">
-      <div class="welcome-logo">${brandLogoHtml()}</div>
+      <div class="welcome-logo">${brandLogoHtml('', 'full')}</div>
       <div>
         <div class="welcome-title">${uiT('welcome.title','Il tuo corpo,<br>i tuoi macro.')}</div>
         <p class="welcome-sub">${uiT('welcome.sub','Accedi per ordinare pasti su misura, tracciare i tuoi progressi e trovare il match perfetto per i tuoi obiettivi.')}</p>
@@ -17376,7 +17388,7 @@ function renderTopbar(){
   const added = el.dataset.cart !== undefined && cartCount > +el.dataset.cart;
   el.dataset.cart = cartCount;
   setChromeHtml(el, `
-    <div class="logo" data-action="tab" data-view="home" aria-label="Home">${brandLogoHtml()}</div>
+    <div class="logo" data-action="tab" data-view="home" aria-label="Home">${brandLogoHtml('', 'mark')}</div>
     <div class="topbar-actions">
       <button class="icon-btn" data-action="nav" data-view="search">${iconSvg('search')}</button>
       <button class="icon-btn${added?' cart-bump':''}" data-action="nav" data-view="cart">
