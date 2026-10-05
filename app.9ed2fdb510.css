@@ -202,9 +202,11 @@ a{color:inherit;text-decoration:none;}
 .logo{display:flex;align-items:center;height:46px;}
 /* telefoni da 320 px (iPhone SE 1ª gen., 5/5s): logo alto 36 px + cerca + carrello non ci stavano e il carrello toccava il bordo */
 @media (max-width:340px){#topbar .logo{height:38px;}}
-.splash-screen{position:fixed;inset:0;background:#141519;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .35s ease;}
+.splash-screen{position:fixed;inset:0;overflow:hidden;background:#141519;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .35s ease;}
 .splash-screen.splash-out{opacity:0;pointer-events:none;}
 .splash-anim{width:min(100vw,560px);aspect-ratio:1;}
+.splash-anim svg{overflow:visible;}
+.splash-anim svg>g{clip-path:none!important;}   /* lo zoom finale della V e il nero coprono tutto lo schermo, non solo il quadrato */
 /* Logo ufficiale MACRO'S (icona + wordmark), fornito dall'utente in due
    varianti: solo una delle due è visibile alla volta, secondo il tema. */
 .brand-logo{display:flex;align-items:center;height:100%;}
@@ -1035,7 +1037,7 @@ html[data-theme="dark"] .cook-ic{background:var(--surface);}
 #order-tracker-bar.otb-mini-on{pointer-events:none;}
 .otb-wrap{width:100%;max-width:640px;display:flex;justify-content:flex-end;}
 .otb-bubble{pointer-events:auto;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease;
-  background:linear-gradient(135deg, #2A2C33, #1B1C21);box-shadow:0 14px 28px -12px rgba(20,22,30,.55), inset 0 1px 0 rgba(255,255,255,.08);}
+  background:linear-gradient(135deg, #2A2C33, #1B1C21);color:#fff;box-shadow:0 14px 28px -12px rgba(20,22,30,.55), inset 0 1px 0 rgba(255,255,255,.08);}   /* bianca come nella card: l'icona della fase è a tratto (currentColor) */
 .otb-bubble-in{animation:otbBubbleIn .35s cubic-bezier(.2,.8,.3,1.2);}
 /* Atterraggio dopo la riduzione: schiacciamento elastico + onda verde che si allarga */
 .otb-bubble{position:relative;}
@@ -2902,3 +2904,70 @@ body.otb-on.has-pwa-update .toast{bottom:calc(250px + env(safe-area-inset-bottom
 .prem-badge svg,.prem-pill svg{width:11px;height:11px;fill:currentColor;stroke:none;}
 .prem-badge{position:absolute;left:8px;top:8px;z-index:2;padding:3px 8px;font-size:9.5px;}
 .prem-pill{margin:6px auto 2px;padding:4px 11px;font-size:11px;}
+
+/* ---------- Curiosità (notifiche educative): pagina della curiosità e «Notifiche e consigli» (js/features/curiosity.js) ---------- */
+.cur-page{margin-top:14px;padding:22px 20px;border-radius:var(--radius-l);background:var(--surface);box-shadow:0 2px 14px rgba(36,37,42,.05);}
+.cur-cat{display:inline-block;padding:4px 11px;border-radius:100px;background:var(--accent-dim);color:var(--ink);font-size:11.5px;font-weight:800;}
+.cur-title{font-family:'Poppins',sans-serif;font-size:22px;line-height:1.25;font-weight:700;margin:12px 0 0;color:var(--ink);}
+.cur-body{font-size:15px;line-height:1.55;margin:10px 0 0;color:var(--ink);}
+.cur-sec{margin-top:20px;}
+.cur-h{font-size:11.5px;font-weight:800;color:var(--muted);margin:0 0 6px;text-transform:uppercase;letter-spacing:.04em;}
+.cur-text{font-size:14px;line-height:1.55;margin:0;color:var(--ink);}
+.cur-note b{color:var(--ink);}
+.cur-sources{list-style:none;margin:0;padding:0;font-size:13px;line-height:1.5;color:var(--muted);}
+.cur-sources a{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:2px;}
+.cur-audience{margin:16px 0 0;font-size:12px;color:var(--muted);}
+.cur-disclaimer{margin:6px 0 0;font-size:11.5px;line-height:1.5;color:var(--muted-2);}
+.cur-rel{margin-top:8px;margin-bottom:0;box-shadow:none;background:var(--surface-2);}
+.cur-rel .or-check svg{width:16px;height:16px;}
+.cur-empty .glyph svg{width:30px;height:30px;}
+.cur-empty-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin:0;}
+.cur-skel{height:22px;border-radius:10px;background:var(--surface-2);margin-top:12px;}
+.cur-skel:first-child{width:40%;margin-top:0;}
+.cur-skel-s{height:14px;}
+.cur-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.edu-sec{margin-top:8px;}
+.edu-intro{font-size:12.5px;color:var(--muted);margin:0 0 4px 4px;line-height:1.45;}
+.edu-card{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:var(--radius-l);border:1.5px solid transparent;
+  background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,rgba(18,160,98,.5),rgba(22,153,205,.5)) border-box;}
+.edu-card .pwa-btn[disabled]{opacity:.6;}
+.edu-label{font-size:12px;font-weight:800;color:var(--muted);margin:16px 0 8px 4px;}
+.edu-freq{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.edu-chip{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:10px;border-radius:14px;background:var(--surface);
+  font-size:13px;font-weight:700;color:var(--ink);box-shadow:0 2px 10px rgba(36,37,42,.05);}
+.edu-chip svg{width:15px;height:15px;}
+.edu-chip.active{outline:1.5px solid var(--accent);background:var(--accent-dim);}
+.edu-window{display:flex;gap:10px;}
+.edu-field{flex:1;display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:var(--muted);}
+.edu-field > span{padding-left:4px;}
+.edu-field select{min-height:44px;}
+.edu-hint{font-size:11.5px;color:var(--muted);margin:8px 0 0 4px;line-height:1.45;}
+.push-debug{margin-top:22px;padding:14px;border-radius:16px;border:1.5px dashed var(--muted-2);}
+.push-debug .pgroup-label{margin-top:0;}
+.push-debug-btns{display:flex;flex-wrap:wrap;gap:8px;}
+.push-debug-out{margin:12px 0 0;white-space:pre-wrap;word-break:break-word;font-size:11px;line-height:1.45;color:var(--ink);max-height:320px;overflow:auto;}
+.push-debug-out:empty{display:none;}
+
+/* Modifica dal carrello: «Modifica» su ogni voce; un pasto composto si apre con i suoi alimenti e − / + (cart.js) */
+.cart-edit{display:inline-flex;align-items:center;gap:5px;margin-left:6px;min-height:28px;padding:0 10px;border-radius:100px;background:var(--surface-2);
+  font-size:12px;font-weight:700;color:var(--ink);}
+.cart-edit svg{width:13px;height:13px;}
+.cart-edit[aria-expanded="true"]{background:var(--accent-dim);outline:1.5px solid var(--accent);}
+.cart-item:has(.cart-parts){flex-wrap:wrap;}
+.cart-parts{flex-basis:100%;margin-top:2px;display:flex;flex-direction:column;gap:6px;}
+.cp-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;background:var(--surface-2);}
+.cp-name{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cp-qty{min-width:56px;text-align:center;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:800;}
+.cp-fixed{font-size:11.5px;color:var(--muted);font-weight:700;}
+.cp-row .qty-mini{background:var(--surface);}
+
+/* Match: topping e condimenti sotto l'alimento scelto (matchToppingHtml in match.js) */
+.sr-top{display:block;font-size:11px;font-weight:700;color:var(--ink);margin-top:3px;}
+.match-top{margin:-4px 0 12px;padding:10px 12px;border-radius:0 0 16px 16px;background:var(--surface);box-shadow:0 2px 10px rgba(36,37,42,.05);}
+.mt-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:36px;font-size:12.5px;font-weight:800;color:var(--ink);text-align:left;}
+.mt-toggle svg{width:16px;height:16px;flex-shrink:0;}
+.mt-body{margin-top:6px;}
+.mt-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+.mt-chip{min-height:36px;padding:7px 12px;border-radius:100px;background:var(--surface-2);font-size:12px;font-weight:700;color:var(--ink);}
+.mt-chip.active{background:var(--accent-dim);outline:1.5px solid var(--accent);}
+.mt-qty{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;}
