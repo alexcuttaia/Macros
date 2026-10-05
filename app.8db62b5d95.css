@@ -2225,7 +2225,8 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
   background:var(--accent-dim);font-size:38px;opacity:1;}
 .empty-state .glyph svg{width:36px;height:36px;color:var(--accent);stroke-width:1.8;}
 /* conferma d'ordine */
-.confirm-check{background:var(--grad-green);box-shadow:0 18px 30px -14px var(--glow-green);}
+/* viola #8800aa (sul fondo verde della conferma la spunta verde si confondeva): stesse tappe della sfumatura verde, 0% 40% 100% */
+.confirm-check{background:linear-gradient(135deg,#6a0086 0%,#8800aa 40%,#5b2fd0 100%);box-shadow:0 18px 30px -14px rgba(136,0,170,.7);}
 
 /* liste e riepiloghi: stessi riquadri colorati del resto dell'app */
 .order-row{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:20px;}
@@ -2982,3 +2983,22 @@ body.otb-on.has-pwa-update .toast{bottom:calc(250px + env(safe-area-inset-bottom
 .about-card .ab-reg{margin-top:60px;margin-left:-2px;}
 /* Home: «Dove vuoi mangiare?» subito sotto il logo (il margine della sezione si sommava alla barra in alto) */
 .choice-block.where-block{margin-top:0;}
+
+/* Carrello: scelta di cosa aggiungere dal suggerimento («Ti manca la verdura?») */
+.sugg-modal{max-height:80vh;display:flex;flex-direction:column;}
+.sugg-pick-list{overflow:auto;margin-top:10px;-webkit-overflow-scrolling:touch;}
+.sugg-pick .sg-ic img{width:100%;height:100%;object-fit:cover;border-radius:inherit;}
+
+/* Voce composta alimento + topping (carrello, ordini): la base e le aggiunte in piccolo nell'angolo (cartItemInfo) */
+.thumb{position:relative;}
+.thumb-combo{display:contents;}
+.thumb-top{position:absolute;right:3px;bottom:3px;width:22px;height:22px;border-radius:50%;overflow:hidden;background:#fff;
+  box-shadow:0 0 0 2px var(--surface),0 3px 8px -2px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;}
+.thumb-top-1{right:21px;}
+.thumb-top img{width:100%;height:100%;object-fit:cover;}
+.thumb-top svg{width:14px;height:14px;}
+
+/* Diario: sposta una voce in un altro pasto (diary-move-open) */
+.dm-move{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted-2);}
+.dm-move svg{width:14px;height:14px;}
+.dm-move-list{margin-top:12px;}
