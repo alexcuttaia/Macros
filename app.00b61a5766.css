@@ -2587,7 +2587,7 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 @media (min-width:600px){.ot-hero{height:260px;}}
 .ot-hero .ot-anim{display:flex;align-items:center;justify-content:center;overflow:visible;}
 /* animazioni dell'ordine (tavolo, consegna, ritiro) più grandi del 20% */
-.ot-hero .ot-anim > .ot-lottie{scale:1.2;}
+.ot-hero .ot-anim > .ot-lottie{scale:var(--ot-s,1);}
 @media (max-width:380px){.ot-hero{height:190px;}}
 
 /* Versione di prova: accesso diretto senza iscrizione (schermata di accesso e passi dell'iscrizione) */
