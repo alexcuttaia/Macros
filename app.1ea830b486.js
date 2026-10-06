@@ -757,7 +757,7 @@ const PHOTO_MAP = {
   d1: 'photos/d1.8a3baae9a2.webp', d2: 'photos/d2.5934359acb.webp',
   // gelato: una coppa per gusto (cartella «Gelato»); d2 da solo = cioccolato, il primo gusto
   'd2/cioccolato': 'photos/d2-cioccolato.5934359acb.webp', 'd2/vaniglia': 'photos/d2-vaniglia.afcee3dcc4.webp', 'd2/pistacchio': 'photos/d2-pistacchio.7ebb09aa0c.webp',
-  'd2/fragola': 'photos/d2-fragola.cff5ecfb00.webp', 'd2/caffe': 'photos/d2-caffe.b05e488dac.webp', 'd2/nocciola': 'photos/d2-nocciola.d803ff1cc9.webp', d3: 'photos/d3.48d6468485.webp', d5: 'photos/d5-classico.535e4c0173.webp', 'd5/classico': 'photos/d5-classico.535e4c0173.webp', 'd5/vanchoc': 'photos/d5-vanchoc.c70b7d897f.webp', 'd5/chocnoc': 'photos/d5-chocnoc.adc219921b.webp', 'd5/carota': 'photos/d5-carota.3102a51a32.webp', d4: 'photos/d4.85b14627f9.webp',
+  'd2/fragola': 'photos/d2-fragola.cff5ecfb00.webp', 'd2/caffe': 'photos/d2-caffe.b05e488dac.webp', 'd2/nocciola': 'photos/d2-nocciola.d803ff1cc9.webp', d3: 'photos/d3.48d6468485.webp', d5: 'photos/d5-classico.3e0e103cec.webp', 'd5/classico': 'photos/d5-classico.3e0e103cec.webp', 'd5/vanchoc': 'photos/d5-vanchoc.686545a430.webp', 'd5/chocnoc': 'photos/d5-chocnoc.f936492bb6.webp', 'd5/carota': 'photos/d5-carota.450bb4b81c.webp', d4: 'photos/d4.85b14627f9.webp',
   c23: 'photos/c23.5888b74e77.webp',
   c24: 'photos/c24.dd223b3280.webp',
   'sup22/jchoc': 'photos/sup22-jchoc.319775d3bf.webp',
