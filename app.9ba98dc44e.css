@@ -1376,6 +1376,9 @@ body.otb-on #app-shell{padding-bottom:184px;}
    niente stato dinamico in alto a destra, solo icona + nome + sottotitolo. */
 .hero .svc-grid{margin-top:20px;}
 .svc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:auto;}
+/* card della Home (Crea il tuo pasto / Match): il testo segue subito l'icona invece di finire in fondo;
+   le due card restano alte uguali e la freccia resta nell'angolo in basso */
+.svc-card.build .svc-top,.svc-card.match .svc-top{margin-bottom:0;}
 .svc-ic{width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.22);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .svc-ic svg{width:17px;height:17px;}
