@@ -703,7 +703,7 @@ const ICON_MAP = {
   sy1:'jar', sy2:'jar', sy3:'jar', sy4:'jar',
   cd1:'jar', cd2:'jar', cd3:'jar', cd4:'jar', cd5:'jar', cd6:'jar', cd7:'jar', cd8:'veggie', cd9:'jar', cd10:'jar',
   b1:'jar', b2:'jar', b3:'jar', b9:'jar', b4:'jar', b5:'jar', b6:'jar', b10:'jar',
-  d1:'porridge', d2:'porridge', d3:'porridge', d4:'porridge',
+  d1:'porridge', d2:'porridge', d3:'porridge', d4:'porridge', d5:'porridge',
   m1:'burger', m2:'wrap', m3:'pasta', m4:'rice', m5:'pasta', m6:'bowl', m7:'bread', m8:'pasta', m9:'potato', m10:'chicken', m11:'porridge', m12:'wrap', m13:'rice', m14:'beef', m15:'porridge', m16:'salad', m17:'pasta',
   sup1:'pill', sup2:'pill', sup3:'pill', sup4:'pill', sup5:'pill', sup6:'pill', sup7:'pill', sup8:'pill', sup9:'pill', sup10:'pill', sup11:'pill', sup12:'pill', sup13:'pill', sup14:'pill', sup15:'pill', sup16:'pill', sup17:'pill', sup19:'pill', sup20:'pill', sup21:'shaker', sup22:'shaker', sup23:'shaker', sup24:'shaker', sup25:'pill', sup26:'pill', sup27:'pill', sup28:'pill', sup29:'pill', sup30:'pill', sup31:'pill', sup32:'pill', sup33:'pill', sup34:'pill', sup35:'pill', sup36:'pill', sup37:'pill', sup38:'pill', sup39:'pill', sup40:'pill', sup41:'pill', sup42:'pill', sup43:'pill', sup44:'pill', sup45:'pill', sup46:'pill', sup47:'pill', sup48:'pill', sup49:'pill', sup50:'pill', sup51:'pill', sup52:'pill', sup53:'pill', sup54:'pill', sup55:'pill',
 };
@@ -757,7 +757,7 @@ const PHOTO_MAP = {
   d1: 'photos/d1.8a3baae9a2.webp', d2: 'photos/d2.5934359acb.webp',
   // gelato: una coppa per gusto (cartella «Gelato»); d2 da solo = cioccolato, il primo gusto
   'd2/cioccolato': 'photos/d2-cioccolato.5934359acb.webp', 'd2/vaniglia': 'photos/d2-vaniglia.afcee3dcc4.webp', 'd2/pistacchio': 'photos/d2-pistacchio.7ebb09aa0c.webp',
-  'd2/fragola': 'photos/d2-fragola.cff5ecfb00.webp', 'd2/caffe': 'photos/d2-caffe.b05e488dac.webp', 'd2/nocciola': 'photos/d2-nocciola.d803ff1cc9.webp', d3: 'photos/d3.48d6468485.webp', d4: 'photos/d4.85b14627f9.webp',
+  'd2/fragola': 'photos/d2-fragola.cff5ecfb00.webp', 'd2/caffe': 'photos/d2-caffe.b05e488dac.webp', 'd2/nocciola': 'photos/d2-nocciola.d803ff1cc9.webp', d3: 'photos/d3.48d6468485.webp', d5: 'photos/d5-classico.535e4c0173.webp', 'd5/classico': 'photos/d5-classico.535e4c0173.webp', 'd5/vanchoc': 'photos/d5-vanchoc.c70b7d897f.webp', 'd5/chocnoc': 'photos/d5-chocnoc.adc219921b.webp', 'd5/carota': 'photos/d5-carota.3102a51a32.webp', d4: 'photos/d4.85b14627f9.webp',
   c23: 'photos/c23.5888b74e77.webp',
   c24: 'photos/c24.dd223b3280.webp',
   'sup22/jchoc': 'photos/sup22-jchoc.319775d3bf.webp',
@@ -3842,6 +3842,17 @@ const DESSERTS = [
   {id:'d4',cat:'dessert',name:'Tiramisù Fit',glyph:'',
    desc:'Savoiardi (30 g) inzuppati nel caffè con crema di formaggio fresco magro, mascarpone light e proteine whey (100 g), cacao amaro; senza zuccheri aggiunti.',
    kcal:279,p:29,c:28,f:6,fib:1,price:5.70,portion:130,fixed:true},
+  {id:'d5',cat:'dessert',name:'Muffin Proteici Fit',glyph:'',
+   desc:'Muffin da 80 g con farina d\'avena, proteine whey e albume; senza zuccheri aggiunti. Scegli il gusto e quanti muffin.',
+   kcal:169,p:20.7,c:17.2,f:1.9,fib:2.7,price:2.90,portion:80,fixed:true,flavors:'muffin'},   // valori per muffin, ricetta in SOURCES.md 6l
+];
+
+/* gusti dei muffin (cartella «Muffin»): valori per un muffin, calcolati dalla ricetta (SOURCES.md 6l) */
+const MUFFIN_FLAVORS = [
+  {id:'classico',  name:'Classico',                sub:'Avena e vaniglia',           color:'#E8C27A', kcal:169, p:20.7, c:17.2, f:1.9, fib:2.7},
+  {id:'vanchoc',   name:'Vaniglia e cioccolato',   sub:'Con gocce di fondente',      color:'#6B4A34', kcal:216, p:21.3, c:20,   f:5.3, fib:3.5},
+  {id:'chocnoc',   name:'Cioccolato e nocciole',   sub:'Whey al cacao e nocciole',   color:'#B8875A', kcal:249, p:21.9, c:20.8, f:9,   fib:3.9},
+  {id:'carota',    name:'Carota',                  sub:'Carote grattugiate e cannella', color:'#F08A2A', kcal:179, p:20.9, c:19.6, f:2, fib:3.4},
 ];
 
 /* ---------------- INTEGRATORI ----------------
@@ -9235,7 +9246,7 @@ function renderHome(){
 
     <section class="section">
       <div class="section-head"><h2>${uiT('cat.meal','Piatti pronti')}</h2><span class="see-all" data-action="tab" data-view="menu" data-cat="meal">${uiT('home.seeAll','Vedi tutti')}</span></div>
-      <div class="grid-2">${topMeals(4).map(m=>foodCard(m)).join('')}${fixedCard(findFood('d2'), 'nocciola')}${fixedCard(findFood('d1'))}</div>
+      <div class="grid-2">${topMeals(4).map(m=>foodCard(m)).join('')}${fixedCard(findFood('d2'), 'nocciola')}${fixedCard(findFood('d1'))}${fixedCard(findFood('d5'))}${fixedCard(findFood('d3'))}</div>
     </section>
   `;
 }
@@ -9351,7 +9362,7 @@ function forYouFoods(){
   return ids.length >= 2 ? ids.map(id=>displayFood(findFood(id))).filter(Boolean) : [];
 }
 
-/* Piatti pronti in Home: i 4 più acquistati, poi Gelato alla nocciola e Pancake proteici. Conta le porzioni di ogni piatto negli ordini fatti
+/* Piatti pronti in Home: 4 salati (i più acquistati) e 4 dolci (Gelato alla nocciola, Pancake, Muffin, Cheesecake). Conta le porzioni di ogni piatto negli ordini fatti
    (STATE.orders — in una versione reale sarebbero le vendite di tutti i clienti); a parità, e finché
    non ci sono ordini, vale l'ordine dei best seller MACRO'S qui sotto. Tutti gli altri restano nel menu. */
 const MEAL_BESTSELLERS = ['m1','m3','m2','m10','m4','m7','m12','m5','m11','m14','m15','m16','m17'];
@@ -10104,6 +10115,10 @@ function dessertState(cfg){
     base = {food:d, name:`${tName(d)} · ${tFlavorName(flavor)}`, detail:`${size.grams} g`,
             kcal:flavor.kcal*r, p:flavor.p*r, c:flavor.c*r, f:flavor.f*r,
             price:+(d.price*r).toFixed(2), flavor, size};
+  } else if(d.flavors === 'muffin'){
+    const flavor = MUFFIN_FLAVORS.find(f=>f.id===cfg.flavor) || MUFFIN_FLAVORS[0];
+    base = {food:d, name:`${tName(d)} · ${tFlavorName(flavor)}`, detail:`${d.portion} g`,
+            kcal:flavor.kcal, p:flavor.p, c:flavor.c, f:flavor.f, price:d.price, flavor};
   } else if(d.addon){
     const a = ADDONS[d.addon];
     const n = cfg.units || a.def;
@@ -10161,6 +10176,16 @@ function renderDessert(params){
       return optionSwatches(set, s.flavor.id, 'dessert-flavor', null, d.gelato ? d.id : null);   // gelato: la coppa di ogni gusto al posto del pallino
     })()}
     ${gelatoSizesHtml(d, s)}
+  ` : d.flavors === 'muffin' ? `
+    ${optionSwatches({label:uiT('dessert.flavor','Gusto'), choices:MUFFIN_FLAVORS.map(f=>({...f, _flavorNS:'flavor'}))}, s.flavor.id, 'dessert-flavor', null, d.id)}
+    <div class="qty-block" style="margin-top:16px;">
+      <span class="qty-label">Muffin</span>
+      <div class="qty-controls">
+        <button class="qty-btn" data-action="dessert-qty" data-delta="-1" ${q<=1?'disabled':''}>${iconSvg('minus')}</button>
+        <div class="qty-value"><span>${q}</span></div>
+        <button class="qty-btn" data-action="dessert-qty" data-delta="1" ${q>=10?'disabled':''}>${iconSvg('plus')}</button>
+      </div>
+    </div>
   ` : d.addon ? `
     <div class="qty-block">
       <span class="qty-label">${tAddonLabel(s.addonKey, s.addon)}</span>

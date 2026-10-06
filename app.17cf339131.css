@@ -836,7 +836,7 @@ html[data-theme="dark"] .cook-ic{background:var(--surface);}
 .confirm-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 0 40px;}
 /* Card di apertura con lo stesso gradiente usato altrove nell'app (banner fedeltà, hero degli
    alimenti): molto più d'impatto del semplice cerchio su sfondo bianco di prima. */
-.confirm-hero{width:100%;position:relative;overflow:hidden;background:var(--grad-green);box-shadow:0 18px 34px -16px var(--glow-green);
+.confirm-hero{width:100%;position:relative;overflow:hidden;background:var(--grad-blue);box-shadow:0 18px 34px -16px var(--glow-blue);
   border-radius:var(--radius-l);padding:36px 20px 30px;display:flex;flex-direction:column;align-items:center;color:#fff;}
 .confirm-hero::before{content:'';position:absolute;right:-60px;top:-60px;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.1);pointer-events:none;}
 .confirm-hero::after{content:'';position:absolute;left:-50px;bottom:-55px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none;}
@@ -2225,8 +2225,8 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
   background:var(--accent-dim);font-size:38px;opacity:1;}
 .empty-state .glyph svg{width:36px;height:36px;color:var(--accent);stroke-width:1.8;}
 /* conferma d'ordine */
-/* viola #8800aa (sul fondo verde della conferma la spunta verde si confondeva): stesse tappe della sfumatura verde, 0% 40% 100% */
-.confirm-check{background:linear-gradient(135deg,#6a0086 0%,#8800aa 40%,#5b2fd0 100%);box-shadow:0 18px 30px -14px rgba(136,0,170,.7);}
+/* spunta verde sul fondo azzurro della conferma (sfumatura blu come le altre tab) */
+.confirm-check{background:var(--grad-green);box-shadow:0 18px 30px -14px var(--glow-green);}
 
 /* liste e riepiloghi: stessi riquadri colorati del resto dell'app */
 .order-row{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:20px;}
@@ -2586,6 +2586,8 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 .ot-hero{height:220px;container-type:size;}
 @media (min-width:600px){.ot-hero{height:260px;}}
 .ot-hero .ot-anim{display:flex;align-items:center;justify-content:center;overflow:visible;}
+/* animazioni dell'ordine (tavolo, consegna, ritiro) più grandi del 20% */
+.ot-hero .ot-anim > .ot-lottie{scale:1.2;}
 @media (max-width:380px){.ot-hero{height:190px;}}
 
 /* Versione di prova: accesso diretto senza iscrizione (schermata di accesso e passi dell'iscrizione) */
