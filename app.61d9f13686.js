@@ -532,7 +532,7 @@ function applySnapshot(s){
 }
 
 /* Tutte le chiavi dell'app sul dispositivo (dati, schermata da riprendere, salvataggio online, copia di un salvataggio rovinato) */
-const STATE_ALL_KEYS = () => [STORAGE_KEY, STORAGE_KEY + '_backup', NAV_RESUME_KEY, CLOUD_SESSION_KEY, CLOUD_SYNC_KEY, CLOUD_DIRTY_KEY, CLOUD_PAY_KEY, CLOUD_FRESH_KEY];
+const STATE_ALL_KEYS = () => [STORAGE_KEY, STORAGE_KEY + '_backup', NAV_RESUME_KEY, CLOUD_SESSION_KEY, CLOUD_SYNC_KEY, CLOUD_DIRTY_KEY, CLOUD_PAY_KEY, CLOUD_FRESH_KEY, CLOUD_WELCOME_KEY];
 
 /* Notifiche educative (js/features/curiosity.js): frequenza, fascia oraria (minuti, 9-21) e categorie (null = tutte) */
 const EDU_NOTIF_DEFAULTS = {educational:false, eduFrequency:'daily', eduStart:540, eduEnd:1260, eduCategories:null};
@@ -3276,6 +3276,7 @@ async function cloudSignIn(email, password){
   const s = cloudSaveSession(await cloudRequest('/auth/v1/token?grant_type=password', {method:'POST', auth:false, body:{email, password}}));
   if(cloudLocalIsForeign(s.user)) return cloudRestartFresh();
   await cloudPull();
+  cloudWelcome();
   return s;
 }
 
@@ -3361,6 +3362,18 @@ function cloudApplyUser(user){
   }
 }
 
+/* Email di benvenuto (Edge Function welcome-email): dopo un accesso l'app chiede al server di inviarla, in
+   background e senza aspettare. Decide tutto il server (utente dal token, email verificata, account nuovo, una sola
+   volta per account). Sul dispositivo si ricorda solo che per questo account non serve richiederla di nuovo. */
+const CLOUD_WELCOME_KEY = 'macros_welcome_done';
+function cloudWelcome(){
+  const s = cloudSession();
+  if(!s || !s.user || cloudReadKey(CLOUD_WELCOME_KEY) === s.user.id) return;
+  cloudRequest('/functions/v1/welcome-email', {method:'POST', body:{}})
+    .then(r=>{ if(r && ['sent', 'already', 'existing'].includes(r.status)) cloudWriteKey(CLOUD_WELCOME_KEY, s.user.id); })
+    .catch(()=>{ /* non configurata o non raggiungibile: si riprova al prossimo accesso, l'accesso non cambia */ });
+}
+
 async function cloudHandleRedirect(){
   if(!cloudEnabled()) return false;
   const h = new URLSearchParams((location.hash || '').replace(/^#/, ''));
@@ -3387,6 +3400,7 @@ async function cloudHandleRedirect(){
     if(cloudLocalIsForeign(user)) return cloudRestartFresh();   // il profilo demo (o di un altro account) non diventa il suo
     cloudApplyUser(user);
     await cloudPull();
+    cloudWelcome();
     if(h.get('type') === 'recovery') setTimeout(cloudAskNewPassword, 300);
     else toast(uiT('cloud.signedIn','Accesso effettuato'));
   }catch(err){ cloudSaveSession(null); toast(err.message); }
@@ -3546,11 +3560,11 @@ function cloudStart(){
     if(cloudReadKey(CLOUD_FRESH_KEY)){   // ripartiti puliti dopo l'accesso: si entra con l'account
       cloudWriteKey(CLOUD_FRESH_KEY, null);
       cloudRequest('/auth/v1/user').then(user=>{ cloudApplyUser(user); return cloudPull(); })
-        .then(()=>{ saveState(); toast(uiT('cloud.signedIn','Accesso effettuato')); render(); })
+        .then(()=>{ saveState(); toast(uiT('cloud.signedIn','Accesso effettuato')); render(); cloudWelcome(); })
         .catch(err=>{ toast(err.message); render(); });
       return;
     }
-    cloudPull().then(()=> render()).catch(()=>{ /* offline: si usano i dati del dispositivo */ })
+    cloudPull().then(()=>{ render(); cloudWelcome(); }).catch(()=>{ /* offline: si usano i dati del dispositivo */ })
       .then(()=> cloudHandlePaymentReturn());
   });
 }
