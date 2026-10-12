@@ -2612,10 +2612,7 @@ input[type=range].mslider::-moz-range-thumb{width:20px;height:20px;background:#f
 .ot-hero .ot-anim > .ot-lottie{scale:var(--ot-s,1);}
 @media (max-width:380px){.ot-hero{height:190px;}}
 
-/* Versione di prova: accesso diretto senza iscrizione (schermata di accesso e passi dell'iscrizione) */
-.welcome-demo{background:transparent;box-shadow:none;border:1.5px dashed var(--accent);border:1.5px dashed color-mix(in srgb, var(--accent) 55%, transparent);}
-.welcome-demo .wo-ic{background:var(--grad-green);color:#fff;}
-.welcome-demo .wo-ic svg{stroke:#fff;}
+/* Link secondario sotto i pulsanti (Password dimenticata?) */
 .su-demo-skip{display:block;margin:12px auto 0;padding:6px 10px;font-size:13px;font-weight:700;color:var(--muted);
   text-decoration:underline;text-underline-offset:3px;text-decoration-color:color-mix(in srgb, var(--muted) 45%, transparent);}
 @media (hover:hover){.su-demo-skip:hover{color:var(--ink);}}
