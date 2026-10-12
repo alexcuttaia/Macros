@@ -3333,6 +3333,9 @@ async function cloudSignOut(){
 const CLOUD_FRESH_KEY = 'macros_cloud_fresh';
 // ritorno da Google con i token: letto subito, prima che la navigazione dell'app riscriva l'indirizzo
 const CLOUD_OAUTH_RETURN = /(^#|&)access_token=/.test(location.hash || '');
+// ritorno da un accesso esterno annullato o non riuscito (error / error_description nell'hash o nella query): letto subito,
+// prima che cloudHandleRedirect ripulisca l'indirizzo; serve allo splash per non ripetere l'intro
+const CLOUD_OAUTH_ERROR_RETURN = /(^#|&)error(_description)?=/.test(location.hash || '') || /[?&]error(_description)?=/.test(location.search || '');
 function cloudLocalIsForeign(user){
   const a = STATE.auth, sync = cloudReadKey(CLOUD_SYNC_KEY);
   const demo = a.method === 'demo' || !!(STATE.nutriProfile && STATE.nutriProfile.demo) || a.email === 'demo@macros.app';
@@ -18805,6 +18808,10 @@ document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState 
 (function(){
   const splash = document.getElementById('splash-screen');
   if(!splash){ stateLoadNotice(); return; }
+  // ritorno dall'accesso con Google/Apple (riuscito o annullato) o ricaricamento subito dopo l'accesso: l'intro si è già
+  // vista prima di uscire verso il provider, non si ripete. Lo splash sparisce subito, senza animazione.
+  const authReturn = CLOUD_OAUTH_RETURN || CLOUD_OAUTH_ERROR_RETURN || !!cloudReadKey(CLOUD_FRESH_KEY);
+  if(authReturn){ splash.remove(); promptDisclaimerIfNeeded(); stateLoadNotice(); return; }
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let closed = false, anim = null;
   const close = () => {
