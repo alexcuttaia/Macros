@@ -17572,6 +17572,7 @@ ${AUTH_CONFIG.showApple ? `      <button class="welcome-opt" data-action="auth-s
         </span>
         <span class="wo-chev">${iconSvg('chev')}</span>
       </button>
+      ${pwaInstallCardHtml()}
       <p style="color:var(--muted-2);font-size:11px;text-align:center;margin-top:18px;line-height:1.5;">
         ${uiT('welcome.terms',"Continuando accetti i Termini di servizio e l'Informativa Privacy di MACRO'S.")}
       </p>
