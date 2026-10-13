@@ -18782,14 +18782,18 @@ defineActions({
     if(PWA.deferred){
       const e = PWA.deferred, asked = Date.now();
       PWA.deferred = null;
-      // Se Android non apre l'installazione (di solito c'è ancora una vecchia icona MACRO'S, per esempio quella
-      // installata dalla landing prima della correzione), la scelta torna «dismissed» subito: lo si spiega invece di restare muti
-      const notShown = ()=> showConfirm(uiT('pwa.cardTitle','Installa MACRO\'S sul telefono'),
-        uiT('pwa.notShown','Chrome non ha aperto l\'installazione. Apri il menu ⋮ in alto a destra e scegli «Installa app» (o «Aggiungi a schermata Home»).'),
+      // Se Chrome non apre l'installazione (rifiuta prompt o risponde «dismissed» subito) lo si dice, con il motivo
+      // tecnico in piccolo, e si indica il menu ⋮ → «Installa app» invece di restare muti
+      const notShown = why=> showConfirm(uiT('pwa.cardTitle','Installa MACRO\'S sul telefono'),
+        uiT('pwa.notShown','Chrome non ha aperto l\'installazione. Apri il menu ⋮ in alto a destra e scegli «Installa app» (o «Aggiungi a schermata Home»).')
+          + `<div style="margin-top:10px;font-size:11px;color:var(--muted)">${esc(why)}</div>`,
         uiT('common.close','Chiudi'), ()=> true);
-      Promise.resolve().then(()=> e.prompt()).then(()=> e.userChoice)
-        .then(c=>{ if(c && c.outcome !== 'accepted' && Date.now() - asked < 1200) notShown(); })
-        .catch(()=> notShown())
+      let p;
+      try{ p = e.prompt(); }   // nello stesso tocco: Chrome apre l'installazione solo durante il gesto dell'utente
+      catch(err){ notShown('prompt: ' + ((err && (err.name || err.message)) || 'errore')); pwaRefreshInstallUI(); return; }
+      Promise.resolve(p).then(()=> e.userChoice)
+        .then(c=>{ const ms = Date.now() - asked; if(c && c.outcome !== 'accepted' && ms < 1200) notShown(`userChoice: ${c.outcome} · ${ms} ms`); })
+        .catch(err=> notShown('prompt: ' + ((err && (err.name || err.message)) || 'errore')))
         .then(()=> pwaRefreshInstallUI());
       return;
     }
