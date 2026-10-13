@@ -2392,6 +2392,9 @@ function navSyncHistory(){
   // prima che arrivi le faceva accumulare fino a far uscire dall'app con tocchi rapidi tra Home e un'altra schermata.
   // Ci si allinea appena arriva (navOnPopState) o, se non arriva, dopo poco.
   if(!NAV_HISTORY.on || NAV_HISTORY.pending) return;
+  // installazione di Chrome aperta (js/app/pwa.js): un history.back() adesso è una navigazione e la annullerebbe
+  // all'istante (si chiude la finestra «Installa» proprio mentre parte). Ci si allinea quando l'utente ha scelto.
+  if(typeof PWA !== 'undefined' && PWA.prompting) return;
   const want = navCanGoBack();
   if(want && !NAV_HISTORY.armed){
     NAV_HISTORY.armed = true;
@@ -18789,12 +18792,14 @@ defineActions({
           + `<div style="margin-top:10px;font-size:11px;color:var(--muted)">${esc(why)}</div>`,
         uiT('common.close','Chiudi'), ()=> true);
       let p;
+      PWA.prompting = true;   // la cronologia resta ferma finché l'installazione di Chrome è aperta (navSyncHistory)
+      const settle = ()=>{ PWA.prompting = false; if(typeof navSyncHistory === 'function') navSyncHistory(); pwaRefreshInstallUI(); };
       try{ p = e.prompt(); }   // nello stesso tocco: Chrome apre l'installazione solo durante il gesto dell'utente
-      catch(err){ notShown('prompt: ' + ((err && (err.name || err.message)) || 'errore')); pwaRefreshInstallUI(); return; }
+      catch(err){ PWA.prompting = false; notShown('prompt: ' + ((err && (err.name || err.message)) || 'errore')); settle(); return; }
       Promise.resolve(p).then(()=> e.userChoice)
         .then(c=>{ const ms = Date.now() - asked; if(c && c.outcome !== 'accepted' && ms < 1200) notShown(`userChoice: ${c.outcome} · ${ms} ms`); })
         .catch(err=> notShown('prompt: ' + ((err && (err.name || err.message)) || 'errore')))
-        .then(()=> pwaRefreshInstallUI());
+        .then(settle);
       return;
     }
     if(pwaIsIOS()) toast(uiT('pwa.iosToast','Tocca Condividi e poi «Aggiungi alla schermata Home»'));
